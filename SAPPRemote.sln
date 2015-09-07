@@ -1,27 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-# SharpDevelop 5.1
-VisualStudioVersion = 12.0.20827.3
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPPRemote", "SAPPRemote\SAPPRemote.csproj", "{0FA78F14-1F27-435D-A4E4-E866515FCD7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
 		Debug|Any CPU = Debug|Any CPU
-		Release|x86 = Release|x86
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Debug|x86.Build.0 = Debug|Any CPU
 		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Debug|Any CPU.Build.0 = Release|Any CPU
-		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Release|x86.ActiveCfg = Release|x86
-		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Release|x86.Build.0 = Release|x86
+		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Debug|x64.ActiveCfg = Debug|x64
+		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Debug|x64.Build.0 = Debug|x64
+		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Debug|x86.Build.0 = Debug|Any CPU
 		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Release|x64.ActiveCfg = Release|x64
+		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Release|x64.Build.0 = Release|x64
+		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Release|x86.ActiveCfg = Release|x86
+		{0FA78F14-1F27-435D-A4E4-E866515FCD7B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
