@@ -20,6 +20,7 @@ namespace SAPPRemote
 		{
 			RC_LOGIN = 1,
 			RC_QUERY,
+			RC_QUERY_STATS,
 			RC_QUERY_POS,
 			RC_CIN,
 			RC_COUT,
@@ -29,7 +30,6 @@ namespace SAPPRemote
 			RC_TEAMCHANGE,
 			RC_NEWGAME
 		}
-
 		
 		public Server()
 		{
