@@ -9,6 +9,22 @@ namespace SAPPRemote
 	using System.Windows;
 	using System.Windows.Controls;
 	using System.Windows.Controls.Primitives;
+	using System.Collections;
+
+	public static class IEnumerableExtensions
+	{
+		public static bool ContentsAreIdentical(this Players<SAPPRemote.PlayerData> items)
+		{
+			object lastItem = null;
+			foreach (object item in items) {
+				if (lastItem != null && !lastItem.Equals(item))
+					return false;
+				lastItem = item;
+			}
+			return true;
+		}
+	}
+
 	public static class ListBoxExtension
 	{
 		public static void AddItem(this ListBox lb, string text, int index, bool waitUntilReturn = false)
@@ -70,6 +86,22 @@ namespace SAPPRemote
 				textBox.Dispatcher.Invoke(append);
 			} else {
 				textBox.Dispatcher.BeginInvoke(append);
+			}
+		}
+	}
+
+	public static class TextBlockExtensions
+	{
+		public static void SetText(this TextBlock textBlock, string text, bool waitUntilReturn = false)
+		{
+
+			Action append = () => textBlock.Text = text;
+			if (textBlock.CheckAccess()) {
+				append();
+			} else if (waitUntilReturn) {
+				textBlock.Dispatcher.Invoke(append);
+			} else {
+				textBlock.Dispatcher.BeginInvoke(append);
 			}
 		}
 	}
