@@ -89,7 +89,7 @@ namespace SAPPRemote
 			iSettings.LoadSettings();
 			InitializeComponent();
 			updater.Tick += updater_Tick;
-			updater.Interval = new TimeSpan(0, 0, 1);
+			updater.Interval = new TimeSpan(0, 0, 3);
 
 			textBox_ip_port.Text = iSettings.IP_Port;
 			textBox_username.Text = iSettings.UserName;
@@ -128,14 +128,16 @@ namespace SAPPRemote
 		
 		private void updater_Tick(object sender, EventArgs e)
 		{
-
+			SendQUERY();
 			//listBox_players.ItemsSource = playerslist;
+			//listBox_players.ItemsSource = SS.Players.ToList() ;
 		}
 
 		void playerslist_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
-			listBox_players.ItemsSource = null;
+			// listBox_players.ItemsSource = null;
 			listBox_players.ItemsSource = playerslist;
+			 
 		}
 
 		void textBox_command_KeyUp(object sender, KeyEventArgs e)
@@ -193,7 +195,7 @@ namespace SAPPRemote
 				ctThread = new Thread(getMessage);
 
 				ctThread.Start();
-				//updater.Start();
+				updater.Start();
 			} catch (Exception ex) {
 				MessageBox.Show(ex.Message);
 			}
@@ -208,7 +210,7 @@ namespace SAPPRemote
 		{
 			try {
 				this.Title = "SAPP Remote > Offline";
-				//updater.Stop();
+				updater.Stop();
 				clientSocket.Close();
 				ctThread.Abort();
 				playerslist.Clear();
@@ -218,6 +220,7 @@ namespace SAPPRemote
 			}
 		}
  
+		bool loadplayerslist = false;
 		public void msg()
 		{
 			string temp = readData;
@@ -226,8 +229,7 @@ namespace SAPPRemote
 					{
 						this.SetTitle(" > Online");
 						textBox_console.CheckAppendText("> Logged-in: Login LVL>" + Json.get_str(temp, "level") + Environment.NewLine);
-						SendQUERY();
-
+						loadplayerslist = true;
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_QUERY:
@@ -237,26 +239,32 @@ namespace SAPPRemote
 						string serverst = string.Format("Game: {8}\nSAPP Version {0}\nServer Name: {1}\nMap: {2} | GameType: {4}\nNoLead: {6} | Anticheat: {7}", SS.SappVersion, SS.ServerName, SS.Map, SS.Mode, SS.GameType.ToUpper(), SS.Players.ToList().Count, (SS.NoLead ? "ON" : "OFF"), (SS.AntiCheat ? "ON" : "OFF"), (SS.Running ? "Running" : "Not Running"));
 						textblock_serverstat.SetText(serverst);
 						try {
-                            
-							if (playerslist.ToList().Count == 0) {
-								foreach (PlayerData PD in SS.Players) {
-									if (!playerslist.ToList().Contains(PD)) {
+							while (loadplayerslist) {
+								if (playerslist.ToList().Count == 0) {
+									foreach (PlayerData PD in SS.Players) {
+										if (!playerslist.ToList().Contains(PD)) {
                                              
-										playerslist.Add(PD);
+											playerslist.Add(PD);
                                             
+										}
 									}
-								}
                                      
+								}
+								loadplayerslist = false;
 							}
                             
 						} catch (Exception ex) {
 						}
 
                              
+						try {
                              
-						foreach (PlayerData PD in SS.Players) {
-							playerslist[Player.GetListIndex(playerslist, PD.Index)] = PD;
+							foreach (PlayerData PD in SS.Players) {
+								playerslist[Player.GetListIndex(playerslist, PD.Index)] = PD;
 
+							}
+						} catch (Exception ex) {
+							 
 						}
 					}
 					return;
@@ -288,7 +296,7 @@ namespace SAPPRemote
 					return;
 				case Server.RemoteConsoleOpcode.RC_CHAT:
 					{
-						PlayerData PD = playerslist[Player.GetListIndex(playerslist, Json.get_int(temp, "index"))];
+						PlayerData PD = playerslist.ToList()[Player.GetListIndex(playerslist.ToList(), Json.get_int(temp, "index"))];
                         
 						switch (Json.get_int(temp, "type")) {
 							case 0: //All
@@ -311,38 +319,57 @@ namespace SAPPRemote
 					return;
 				case Server.RemoteConsoleOpcode.RC_PJOIN:
 					{
+						
 						try {
+							updater.Stop();
 							PlayerData tempplayer = Player.GetData(temp);
 
 							if (!playerslist.ToList().Contains(tempplayer)) {
 								playerslist.Add(tempplayer);
 							}
 							textBox_console.CheckAppendText("> Player Joined, Name: " + tempplayer.Name + Environment.NewLine);
+							updater.Start();
 						} catch (Exception ex) {
+							 
 						}
 						
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_PLEAVE:
 					{
+						
 						try {
-							int pindex = Player.GetListIndex(playerslist, Json.get_int(temp, "index"));
+							updater.Stop();
+							int pindex = Player.GetListIndex(playerslist.ToList(), Json.get_int(temp, "index"));
 							PlayerData PD = playerslist[pindex];
 							playerslist.RemoveAt(pindex);
-
+							 
 							textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + Environment.NewLine);
+							updater.Start();
 						} catch (Exception ex) {
+							 
 						}
+						
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_TEAMCHANGE:
 					{
-						SendQUERY();
+						//SendQUERY();
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_NEWGAME:
 					{
-						SendQUERY();
+						try {
+							updater.Stop();
+							
+							foreach (PlayerData PD in playerslist.ToList()) {
+								textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + Environment.NewLine);
+							}
+
+							updater.Start();
+						} catch (Exception ex) {
+							 
+						}
 						playerslist.Clear();
 					}
 					return;

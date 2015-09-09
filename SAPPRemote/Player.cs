@@ -50,6 +50,18 @@ namespace SAPPRemote
 			
 			return temp;
 		}
+		internal static int GetListIndex(List<PlayerData> plist, int pindex)
+		{
+			int temp = -1;
+			foreach (PlayerData PD in plist) {
+				if (PD.Index == pindex) {
+					 
+					temp = plist.IndexOf(PD);
+				}
+			}
+			
+			return temp;
+		}
 		internal static PlayerData GetData(string json)
 		{
 			PlayerData temp = new PlayerData();
