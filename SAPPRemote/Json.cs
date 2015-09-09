@@ -105,5 +105,108 @@ namespace SAPPRemote
 			}
 			return temp;
 		}
+
+		public static string GenerateString(object jsonobj)
+		{
+			var s = new JsonSerializerSettings();
+			s.ObjectCreationHandling = ObjectCreationHandling.Replace; // without this, you end up with duplicates.
+
+			return JsonConvert.SerializeObject(jsonobj, Formatting.None, s);
+		}
+
+		public static PlayerData GetPlayerData(string json_string)
+		{
+			PlayerData temp = new PlayerData();
+			try {
+				//string json_string = File.ReadAllText(SAPPRemote.MainWindow.SettingPath);
+				if (Json.IsValid(json_string)) {
+					var s = new JsonSerializerSettings();
+					s.NullValueHandling = NullValueHandling.Ignore;
+					s.ObjectCreationHandling = ObjectCreationHandling.Replace; // without this, you end up with duplicates.
+
+					temp = JsonConvert.DeserializeObject<PlayerData>(json_string, s);
+				} else {
+
+				}
+			} catch (Exception) {
+			}
+			return temp;
+		}
+
+		public static ServerStat GetServerStat(string json_string)
+		{
+			ServerStat temp = new ServerStat();
+			try {
+				//string json_string = File.ReadAllText(SAPPRemote.MainWindow.SettingPath);
+				if (Json.IsValid(json_string)) {
+					var s = new JsonSerializerSettings();
+					s.NullValueHandling = NullValueHandling.Ignore;
+					s.ObjectCreationHandling = ObjectCreationHandling.Replace; // without this, you end up with duplicates.
+
+					temp = JsonConvert.DeserializeObject<ServerStat>(json_string, s);
+				} else {
+
+				}
+			} catch (Exception) {
+			}
+			return temp;
+		}
+
+		public static TeamChange GetTeamChange(string json_string)
+		{
+			TeamChange temp = new TeamChange();
+			try {
+				//string json_string = File.ReadAllText(SAPPRemote.MainWindow.SettingPath);
+				if (Json.IsValid(json_string)) {
+					var s = new JsonSerializerSettings();
+					s.NullValueHandling = NullValueHandling.Ignore;
+					s.ObjectCreationHandling = ObjectCreationHandling.Replace; // without this, you end up with duplicates.
+
+					temp = JsonConvert.DeserializeObject<TeamChange>(json_string, s);
+				} else {
+
+				}
+			} catch (Exception) {
+			}
+			return temp;
+		}
+
+		public static NewGame GetNewGame(string json_string)
+		{
+			NewGame temp = new NewGame();
+			try {
+				//string json_string = File.ReadAllText(SAPPRemote.MainWindow.SettingPath);
+				if (Json.IsValid(json_string)) {
+					var s = new JsonSerializerSettings();
+					s.NullValueHandling = NullValueHandling.Ignore;
+					s.ObjectCreationHandling = ObjectCreationHandling.Replace; // without this, you end up with duplicates.
+
+					temp = JsonConvert.DeserializeObject<NewGame>(json_string, s);
+				} else {
+
+				}
+			} catch (Exception) {
+			}
+			return temp;
+		}
+
+		public static PlayerLeave GetPlayerLeave(string json_string)
+		{
+			PlayerLeave temp = new PlayerLeave();
+			try {
+				//string json_string = File.ReadAllText(SAPPRemote.MainWindow.SettingPath);
+				if (Json.IsValid(json_string)) {
+					var s = new JsonSerializerSettings();
+					s.NullValueHandling = NullValueHandling.Ignore;
+					s.ObjectCreationHandling = ObjectCreationHandling.Replace; // without this, you end up with duplicates.
+
+					temp = JsonConvert.DeserializeObject<PlayerLeave>(json_string, s);
+				} else {
+
+				}
+			} catch (Exception) {
+			}
+			return temp;
+		}
 	}
 }

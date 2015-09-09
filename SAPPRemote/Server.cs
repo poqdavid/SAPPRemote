@@ -6,27 +6,384 @@
 namespace SAPPRemote
 {
 	using System;
+	using Newtonsoft.Json;
+	using System.ComponentModel;
+	using System.Collections.Generic;
+	using System.Windows.Media;
 	
 	/// <summary>
 	/// Description of Server.
 	/// </summary>
 	public class Server
 	{
-		internal enum RemoteConsoleOpcode
+		public enum RemoteConsoleOpcode
 		{
 			RC_LOGIN = 1,
-			RC_QUERY = 2,
-			RC_CIN = 3,
-			RC_COUT = 4,
-			RC_CHAT = 5,
-			RC_PJOIN = 6,
-			RC_PLEAVE = 7,
-			RC_TEAMCHANGE = 8,
-			RC_NEWGAME = 9
+			RC_QUERY,
+			RC_QUERY_POS,
+			RC_CIN,
+			RC_COUT,
+			RC_CHAT,
+			RC_PJOIN,
+			RC_PLEAVE,
+			RC_TEAMCHANGE,
+			RC_NEWGAME
 		}
+
 		
 		public Server()
 		{
 		}
+	}
+
+	public class Login
+	{
+		public Login()
+		{
+        
+		}
+
+		public Login(string usern, string userp)
+		{
+			this.UserName = usern;
+			this.Password = userp;
+		}
+		public Login(Server.RemoteConsoleOpcode opcode, string usern, string userp)
+		{
+			this.opCode = opcode;
+			this.UserName = usern;
+			this.Password = userp;
+		}
+		///<summary>
+		/// Default value for opCode.
+		///</summary>
+		private Server.RemoteConsoleOpcode defaultopCode = Server.RemoteConsoleOpcode.RC_LOGIN;
+
+		///<summary>
+		/// Default value for UserName.
+		///</summary>
+		private string defaultUserName = "";
+
+		///<summary>
+		/// Default value for Password.
+		///</summary>
+		private string defaultPassword = "";
+
+		///<summary>
+		/// Gets or sets the opCode property.
+		///</summary>
+		///<value>opCode data.</value>
+		[JsonProperty("opcode")]
+		[DefaultValue(Server.RemoteConsoleOpcode.RC_LOGIN)]
+		public Server.RemoteConsoleOpcode opCode { get { return this.defaultopCode; } set { this.defaultopCode = value; } }
+
+		///<summary>
+		/// Gets or sets the UserName property.
+		///</summary>
+		///<value>User Name string.</value>
+		[JsonProperty("username")]
+		[DefaultValue("")]
+		public string UserName { get { return this.defaultUserName; } set { this.defaultUserName = value; } }
+
+		///<summary>
+		/// Gets or sets the Password property.
+		///</summary>
+		///<value>Password mode.</value>
+		[JsonProperty("password")]
+		[DefaultValue("")]
+		public string Password { get { return this.defaultPassword; } set { this.defaultPassword = value; } }
+	}
+
+	public class Command
+	{
+
+		public Command()
+		{
+		}
+		public Command(string command)
+		{
+			this.myCommand = command;
+		}
+
+		public Command(Server.RemoteConsoleOpcode opcode, string command)
+		{
+			this.opCode = opcode;
+			this.myCommand = command;
+		}
+
+		///<summary>
+		/// Default value for opCode.
+		///</summary>
+		private Server.RemoteConsoleOpcode defaultopCode = Server.RemoteConsoleOpcode.RC_CIN;
+
+		///<summary>
+		/// Default value for UserName.
+		///</summary>
+		private string defaultCommand = "";
+
+
+		///<summary>
+		/// Gets or sets the opCode property.
+		///</summary>
+		///<value>opCode data.</value>
+		[JsonProperty("opcode")]
+		[DefaultValue(Server.RemoteConsoleOpcode.RC_CIN)]
+		public Server.RemoteConsoleOpcode opCode { get { return this.defaultopCode; } set { this.defaultopCode = value; } }
+
+		///<summary>
+		/// Gets or sets the UserName property.
+		///</summary>
+		///<value>User Name string.</value>
+		[JsonProperty("command")]
+		[DefaultValue("")]
+		public string myCommand { get { return this.defaultCommand; } set { this.defaultCommand = value; } }
+
+	}
+
+	public class Query
+	{
+		public Query()
+		{
+		}
+		public Query(Server.RemoteConsoleOpcode opcode)
+		{
+			this.opCode = opcode;
+		}
+
+		///<summary>
+		/// Default value for opCode.
+		///</summary>
+		private Server.RemoteConsoleOpcode defaultopCode = Server.RemoteConsoleOpcode.RC_QUERY;
+
+		///<summary>
+		/// Gets or sets the opCode property.
+		///</summary>
+		///<value>opCode data.</value>
+		[JsonProperty("opcode")]
+		[DefaultValue(Server.RemoteConsoleOpcode.RC_QUERY)]
+		public Server.RemoteConsoleOpcode opCode { get { return this.defaultopCode; } set { this.defaultopCode = value; } }
+	}
+
+	public class ServerStat
+	{
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private bool defaultAntiCheat = false;
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private string defaultGameType = "";
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private string defaultMap = "";
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private string defaultMode = "";
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private bool defaultNoLead = false;
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private bool defaultRunning = false;
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private string defaultSappVersion = "";
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private string defaultServerName = "";
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private bool? defaultTeams = false;
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private string defaultVersion = "";
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private Players<PlayerData> defaultPlayers = new Players<PlayerData>() { };
+
+		///<summary>
+		/// Gets or sets a value indicating whether to use  or not.
+		///</summary>
+		///<value>Use .</value>
+		[JsonProperty("anticheat")]
+		[DefaultValue(false)]
+		public bool AntiCheat { get { return this.defaultAntiCheat; } set { this.defaultAntiCheat = value; } }
+
+		///<summary>
+		/// Gets or sets the  property.
+		///</summary>
+		///<value>  string.</value>
+		[JsonProperty("gametype")]
+		[DefaultValue("")]
+		public string GameType { get { return this.defaultGameType; } set { this.defaultGameType = value; } }
+
+		///<summary>
+		/// Gets or sets the   property.
+		///</summary>
+		///<value>  string.</value>
+		[JsonProperty("map")]
+		[DefaultValue("")]
+		public string Map { get { return this.defaultMap; } set { this.defaultMap = value; } }
+
+		///<summary>
+		/// Gets or sets the   property.
+		///</summary>
+		///<value>  string.</value>
+		[JsonProperty("mode")]
+		[DefaultValue("")]
+		public string Mode { get { return this.defaultMode; } set { this.defaultMode = value; } }
+
+		///<summary>
+		/// Gets or sets a value indicating whether to use   or not.
+		///</summary>
+		///<value>Use .</value>
+		[JsonProperty("no-lead")]
+		[DefaultValue(false)]
+		public bool NoLead { get { return this.defaultNoLead; } set { this.defaultNoLead = value; } }
+
+		///<summary>
+		/// Gets or sets a value indicating whether to use   or not.
+		///</summary>
+		///<value>Use .</value>
+		[JsonProperty("players")]
+		public Players<PlayerData> Players { get { return this.defaultPlayers; } set { this.defaultPlayers = value; } }
+
+		///<summary>
+		/// Gets or sets a value indicating whether to use   or not.
+		///</summary>
+		///<value>Use  .</value>
+		[JsonProperty("running")]
+		[DefaultValue(false)]
+		public bool Running { get { return this.defaultRunning; } set { this.defaultRunning = value; } }
+
+		///<summary>
+		/// Gets or sets the   property.
+		///</summary>
+		///<value>  string.</value>
+		[JsonProperty("sapp_version")]
+		[DefaultValue("")]
+		public string SappVersion { get { return this.defaultSappVersion; } set { this.defaultSappVersion = value; } }
+
+
+		///<summary>
+		/// Gets or sets the   property.
+		///</summary>
+		///<value>  string.</value>
+		[JsonProperty("servername")]
+		[DefaultValue("")]
+		public string ServerName { get { return this.defaultServerName; } set { this.defaultServerName = value; } }
+
+		///<summary>
+		/// Gets or sets a value indicating whether to use   or not.
+		///</summary>
+		///<value>Use  .</value>
+		[JsonProperty("teams")]
+		[DefaultValue(false)]
+		public bool? Teams { get { return this.defaultTeams; } set { this.defaultTeams = value; } }
+
+		///<summary>
+		/// Gets or sets the   property.
+		///</summary>
+		///<value>  string.</value>
+		[JsonProperty("version")]
+		[DefaultValue("")]
+		public string Version { get { return this.defaultVersion; } set { this.defaultVersion = value; } }
+    
+	}
+
+	public class TeamChange
+	{
+
+		private int defaultIndex = 0;
+
+		private int defaultTeam = 0;
+
+		[JsonProperty("index")]
+		public int Index { get { return this.defaultIndex; } set { this.defaultIndex = value; } }
+
+		///<summary>
+		/// Gets or sets the opCode property.
+		///</summary>
+		///<value>opCode data.</value>
+		[JsonProperty("opcode")]
+		public Server.RemoteConsoleOpcode opCode { get; set; }
+
+		[JsonProperty("team")]
+		public int iTeam { get { return this.defaultTeam; } set { this.defaultTeam = value; } }
+
+		[JsonIgnore]
+		public SolidColorBrush Team { get { return Player.GetTeamColor(this.iTeam); } set { } }
+	}
+
+	public class NewGame
+	{
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private string defaultGameType = "";
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private string defaultMap = "";
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private string defaultMode = "";
+
+		///<summary>
+		/// Gets or sets the  property.
+		///</summary>
+		///<value>  string.</value>
+		[JsonProperty("gametype")]
+		[DefaultValue("")]
+		public string GameType { get { return this.defaultGameType; } set { this.defaultGameType = value; } }
+
+		///<summary>
+		/// Gets or sets the   property.
+		///</summary>
+		///<value>  string.</value>
+		[JsonProperty("map")]
+		[DefaultValue("")]
+		public string Map { get { return this.defaultMap; } set { this.defaultMap = value; } }
+
+		///<summary>
+		/// Gets or sets the   property.
+		///</summary>
+		///<value>  string.</value>
+		[JsonProperty("mode")]
+		[DefaultValue("")]
+		public string Mode { get { return this.defaultMode; } set { this.defaultMode = value; } }
+	}
+
+	public class PlayerLeave
+	{
+
+		private int defaultIndex = 0;
+
+		[JsonProperty("index")]
+		public int Index { get { return this.defaultIndex; } set { this.defaultIndex = value; } }
+
 	}
 }

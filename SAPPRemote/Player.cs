@@ -10,25 +10,30 @@ namespace SAPPRemote
 	using System.Collections.ObjectModel;
 	using System.Windows.Media;
 	using System.Windows.Threading;
+	using Newtonsoft.Json;
+	using System.Collections;
+	using System.Collections.Specialized;
 
 	internal static class Player
 	{
-		internal static SolidColorBrush GetColor(string color_str)
+		internal static SolidColorBrush GetColor(iColor color)
 		{
-            byte r = (byte)Json.get_int(color_str, "r");
-            byte g = (byte)Json.get_int(color_str, "g");
-            byte b = (byte)Json.get_int(color_str, "b");
-            SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(255, r, g, b));
-            brush.Freeze();
-            return brush;
+			byte r = (byte)color.R;
+			byte g = (byte)color.G;
+			byte b = (byte)color.B;
+            
+			SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(r, g, b));
+            
+			brush.Freeze();
+			return brush;
 		}
 		internal static SolidColorBrush GetTeamColor(int color_code)
 		{
 			switch (color_code) {
 				case 0:
-					return Brushes.Blue;
-				case 1:
 					return Brushes.Red;
+				case 1:
+					return Brushes.Blue;
 				default:
 					return Brushes.Black;
 			}
@@ -48,11 +53,8 @@ namespace SAPPRemote
 		internal static PlayerData GetData(string json)
 		{
 			PlayerData temp = new PlayerData();
-			temp.Name = Json.get_str(json, "name");
-			temp.Index = Json.get_int(json, "index");
-			temp.Stats = GetStat_str(json);
-			temp.Team = GetTeamColor(Json.get_int(json, "team"));
-			temp.PlayerColor = GetColor(Json.get_str(json,"color"));
+			temp = Json.GetPlayerData(json);
+            
 			return temp;
 		}
 		internal static PlayerStat GetStat(string json)
@@ -74,19 +76,78 @@ namespace SAPPRemote
 			return tempstat;
 		}
 	}
-	
+
+
+	public class iColor
+	{
+		private int defaultB = 0;
+		private int defaultG = 0;
+		private int defaultR = 0;
+
+		[JsonProperty("b")]
+		public int B { get { return this.defaultB; } set { this.defaultB = value; } }
+
+		[JsonProperty("g")]
+		public int G { get { return this.defaultG; } set { this.defaultG = value; } }
+
+		[JsonProperty("r")]
+		public int R { get { return this.defaultR; } set { this.defaultR = value; } }
+	}
+
 	public class PlayerData
 	{
-		public string Name { get; set; }
-		public int Index { get; set; }
-		public string Stats { get; set; }
+		private int defaultAssists = 0;
+		private int defaultBetrays = 0;
+		private iColor defaultColor = new iColor();
+		private int defaultDeaths = 0;
+		private int defaultIndex = 0;
+		private int defaultKills = 0;
+		private string defaultName = "";
+		private int defaultScore = 0;
+		private int defaultSuicides = 0;
+		private int defaultTeam = 0;
 
-		// 0 = Blue 1 = Red
-		private SolidColorBrush defaultTeam = Brushes.Black;
-		public SolidColorBrush Team { get { return this.defaultTeam; } set { this.defaultTeam = value; } }
-		private SolidColorBrush defaultPlayerColor = Brushes.Black;
-		public SolidColorBrush PlayerColor { get { return this.defaultPlayerColor; } set { this.defaultPlayerColor = value; } }
+		[JsonProperty("assists")]
+		public int Assists { get { return this.defaultAssists; } set { this.defaultAssists = value; } }
+
+		[JsonProperty("betrays")]
+		public int Betrays { get { return this.defaultBetrays; } set { this.defaultBetrays = value; } }
+
+		[JsonProperty("color")]
+		public iColor iPlayerColor { get { return this.defaultColor; } set { this.defaultColor = value; } }
+
+		[JsonIgnore]
+		public SolidColorBrush PlayerColor { get { return Player.GetColor(this.iPlayerColor); } set { } }
+
+		[JsonProperty("deaths")]
+		public int Deaths { get { return this.defaultDeaths; } set { this.defaultDeaths = value; } }
+
+		[JsonProperty("index")]
+		public int Index { get { return this.defaultIndex; } set { this.defaultIndex = value; } }
+
+		[JsonProperty("kills")]
+		public int Kills { get { return this.defaultKills; } set { this.defaultKills = value; } }
+
+		[JsonProperty("name")]
+		public string Name { get { return this.defaultName; } set { this.defaultName = value; } }
+
+		[JsonProperty("score")]
+		public int Score { get { return this.defaultScore; } set { this.defaultScore = value; } }
+
+		[JsonProperty("suicides")]
+		public int Suicides { get { return this.defaultSuicides; } set { this.defaultSuicides = value; } }
+
+		[JsonProperty("team")]
+		public int iTeam { get { return this.defaultTeam; } set { this.defaultTeam = value; } }
+
+		[JsonIgnore]
+		public SolidColorBrush Team { get { return Player.GetTeamColor(this.iTeam); } set { } }
+
+		[JsonIgnore]
+		public string Stats { get { return string.Format("Score: {0}\nKills: {1}\nAssists: {2}\nDeaths: {3}\nSuicides: {4}\nBetrays: {5}", this.Score, this.Kills, this.Assists, this.Deaths, this.Suicides, this.Betrays); } set { } }
+       
 	}
+
 	
 	public class PlayerStat
 	{
@@ -107,6 +168,7 @@ namespace SAPPRemote
 		private delegate void ClearItemsCallback();
 		private delegate void InsertItemCallback(int index, PlayerData item);
 		private delegate void MoveItemCallback(int oldIndex, int newIndex);
+        
 
 		public Dispatcher Dispatcher {
 			get { return dispatcherUIThread; }
@@ -179,5 +241,13 @@ namespace SAPPRemote
 					new MoveItemCallback(MoveItem), oldIndex, new object[] { newIndex });
 			}
 		}
+
+ 
+
+
+
+ 
+
+ 
 	}
 }
