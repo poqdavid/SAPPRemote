@@ -110,7 +110,7 @@ namespace SAPPRemote
 			var s = new JsonSerializerSettings();
 			s.ObjectCreationHandling = ObjectCreationHandling.Replace; // without this, you end up with duplicates.
 
-			File.WriteAllText(SAPPRemote.MainWindow.SettingPath, JsonConvert.SerializeObject(SAPPRemote.MainWindow.ISettings, Formatting.Indented, s));
+			File.WriteAllText(SAPPRemote.SAPPRemoteUI.SettingPath, JsonConvert.SerializeObject(SAPPRemote.SAPPRemoteUI.ISettings, Formatting.Indented, s));
 		}
 
 		/// <summary>
@@ -119,13 +119,13 @@ namespace SAPPRemote
 		public void LoadSettings()
 		{
 			try {
-				string json_string = File.ReadAllText(SAPPRemote.MainWindow.SettingPath);
+				string json_string = File.ReadAllText(SAPPRemote.SAPPRemoteUI.SettingPath);
 				if (Json.IsValid(json_string)) {
 					var s = new JsonSerializerSettings();
 					s.NullValueHandling = NullValueHandling.Ignore;
 					s.ObjectCreationHandling = ObjectCreationHandling.Replace; // without this, you end up with duplicates.
 
-					SAPPRemote.MainWindow.ISettings = JsonConvert.DeserializeObject<Settings>(json_string, s);
+					SAPPRemote.SAPPRemoteUI.ISettings = JsonConvert.DeserializeObject<Settings>(json_string, s);
 				} else {
 					SaveSetting();
 					LoadSettings();

@@ -10,12 +10,15 @@ namespace SAPPRemote
 	using System.ComponentModel;
 	using System.Collections.Generic;
 	using System.Windows.Media;
+	using Newtonsoft.Json.Converters;
 	
 	/// <summary>
 	/// Description of Server.
 	/// </summary>
 	public class Server
 	{
+
+		[Description("Property 1")]
 		public enum RemoteConsoleOpcode
 		{
 			RC_LOGIN = 1,
@@ -30,6 +33,10 @@ namespace SAPPRemote
 			RC_TEAMCHANGE,
 			RC_NEWGAME
 		}
+		
+		[JsonProperty("opcode")]
+		[Description("Property 1")]
+		public static RemoteConsoleOpcode opcode { get; set; }
 		
 		public Server()
 		{
@@ -138,30 +145,6 @@ namespace SAPPRemote
 		[DefaultValue("")]
 		public string myCommand { get { return this.defaultCommand; } set { this.defaultCommand = value; } }
 
-	}
-
-	public class Query
-	{
-		public Query()
-		{
-		}
-		public Query(Server.RemoteConsoleOpcode opcode)
-		{
-			this.opCode = opcode;
-		}
-
-		///<summary>
-		/// Default value for opCode.
-		///</summary>
-		private Server.RemoteConsoleOpcode defaultopCode = Server.RemoteConsoleOpcode.RC_QUERY;
-
-		///<summary>
-		/// Gets or sets the opCode property.
-		///</summary>
-		///<value>opCode data.</value>
-		[JsonProperty("opcode")]
-		[DefaultValue(Server.RemoteConsoleOpcode.RC_QUERY)]
-		public Server.RemoteConsoleOpcode opCode { get { return this.defaultopCode; } set { this.defaultopCode = value; } }
 	}
 
 	public class ServerStat
@@ -308,6 +291,11 @@ namespace SAPPRemote
 		[JsonProperty("version")]
 		[DefaultValue("")]
 		public string Version { get { return this.defaultVersion; } set { this.defaultVersion = value; } }
+		
+		public override string ToString()
+		{
+			return string.Format("Game: {8}\nSAPP Version {0}\nServer Name: {1}\nMap: {2} | GameType: {4}\nNoLead: {6} | Anticheat: {7}", this.SappVersion, this.ServerName, this.Map, this.Mode, this.GameType.ToUpper(), this.Players.Count, (this.NoLead ? "ON" : "OFF"), (this.AntiCheat ? "ON" : "OFF"), (this.Running ? "Running" : "Not Running"));
+		}
     
 	}
 
@@ -317,6 +305,7 @@ namespace SAPPRemote
 		private int defaultIndex = 0;
 
 		private int defaultTeam = 0;
+		private SolidColorBrush defaultiTeam = Brushes.Black;
 
 		[JsonProperty("index")]
 		public int Index { get { return this.defaultIndex; } set { this.defaultIndex = value; } }
@@ -332,7 +321,15 @@ namespace SAPPRemote
 		public int iTeam { get { return this.defaultTeam; } set { this.defaultTeam = value; } }
 
 		[JsonIgnore]
-		public SolidColorBrush Team { get { return Player.GetTeamColor(this.iTeam); } set { } }
+		public SolidColorBrush Team {
+			get {
+				this.defaultiTeam = Player.GetTeamColor(this.iTeam);
+				return this.defaultiTeam; 
+			}
+			set { this.defaultiTeam = value; }
+		}
+		
+
 	}
 
 	public class NewGame
@@ -375,6 +372,14 @@ namespace SAPPRemote
 		[JsonProperty("mode")]
 		[DefaultValue("")]
 		public string Mode { get { return this.defaultMode; } set { this.defaultMode = value; } }
+		
+		public ServerStat ToServerStat(ServerStat temp)
+		{
+			temp.GameType = this.GameType;
+			temp.Map = this.Map;
+			temp.Mode = this.Mode;
+			return temp;
+		}
 	}
 
 	public class PlayerLeave
