@@ -111,6 +111,7 @@ namespace SAPPRemote
 		private int defaultAssists = 0;
 		private int defaultBetrays = 0;
 		private iColor defaultColor = new iColor();
+		private SolidColorBrush defaultiTeam = Brushes.Black;
 		private int defaultDeaths = 0;
 		private int defaultIndex = 0;
 		private int defaultKills = 0;
@@ -153,7 +154,13 @@ namespace SAPPRemote
 		public int iTeam { get { return this.defaultTeam; } set { this.defaultTeam = value; } }
 
 		[JsonIgnore]
-		public SolidColorBrush Team { get { return Player.GetTeamColor(this.iTeam); } set { } }
+		public SolidColorBrush Team {
+			get {
+				this.defaultiTeam = Player.GetTeamColor(this.iTeam);
+				return this.defaultiTeam; 
+			}
+			set { this.defaultiTeam = value; }
+		}
 
 		[JsonIgnore]
 		public string Stats { get { return string.Format("Score: {0}\nKills: {1}\nAssists: {2}\nDeaths: {3}\nSuicides: {4}\nBetrays: {5}", this.Score, this.Kills, this.Assists, this.Deaths, this.Suicides, this.Betrays); } set { } }
