@@ -61,6 +61,7 @@ namespace SAPPRemote
 		public Players<PlayerData> playerslist = new Players<PlayerData>();
 
 		public DispatcherTimer updater = new DispatcherTimer();
+		public ContextMenu CM = new ContextMenu();
 
 		private void ReadArgs()
 		{
@@ -77,7 +78,8 @@ namespace SAPPRemote
 
 			}
 		}
-		
+
+        
 		public SAPPRemoteUI()
 		{
 			ReadArgs();
@@ -96,9 +98,21 @@ namespace SAPPRemote
 			checkbox_autoconnect.IsChecked = iSettings.AutoConnect;
             
 			playerslist.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(playerslist_CollectionChanged);
+			foreach (iMenuData imd in iSettings.iMenuItems) {
+				CM.Items.Add(GenerateMenuItem(imd));
+			}
 
 		}
-		
+
+		public MenuItem GenerateMenuItem(iMenuData imd)
+		{
+			MenuItem MI = new MenuItem();
+			MI.Click += new RoutedEventHandler(MenuItem_Click);
+			MI.Header = imd.Text;
+			MI.Tag = imd.Command;
+			return MI;
+		}
+
 		void window_client_Loaded(object sender, RoutedEventArgs e)
 		{
 			if (iSettings.AutoConnect == true) {
@@ -222,6 +236,16 @@ namespace SAPPRemote
 		private void button_refresh_Click(object sender, RoutedEventArgs e)
 		{
 			myTcpClient.SendQUERY();
+		}
+
+		private void MenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem temp = (MenuItem)sender;
+			PlayerData PD = (PlayerData)listBox_players.SelectedItem;
+			string outText = "";
+			outText = Json.GenerateString(new Command(temp.Tag.ToString().Replace("%index", PD.Index.ToString()).Replace("%name", PD.Name)));
+			myTcpClient.Send(myTcpClient.clientSocket.Client, outText);
+           
 		}
 
 	}
