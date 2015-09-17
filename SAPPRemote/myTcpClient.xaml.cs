@@ -240,23 +240,7 @@ namespace SAPPRemote
 					return;
 				case Server.RemoteConsoleOpcode.RC_CIN:
 					{
-						switch (Json.get_int(temp, "ret")) {
-							case 0:
-								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + "Command Faild!" + Environment.NewLine);
-								}
-								return;
-							case 1:
-								{
-									//OK
-								}
-								return;
-							case -1:
-								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + "Sorry you don't have the premission for that command!" + Environment.NewLine);
-								}
-								return;
-						}
+
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_COUT:

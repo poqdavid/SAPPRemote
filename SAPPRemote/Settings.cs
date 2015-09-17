@@ -29,7 +29,7 @@ namespace SAPPRemote
 		///<summary>
 		/// Default value for IP_Port.
 		///</summary>
-		private string defaultIP_Port = "127.0.0.1:12345";
+		private string defaultIP_Port = "localhost:2302";
 
 		///<summary>
 		/// Default value for UserName.
@@ -51,7 +51,7 @@ namespace SAPPRemote
 		///</summary>
 		///<value>IP:Port string.</value>
 		[JsonProperty("IP_Port")]
-		[DefaultValue("127.0.0.1:12345")]
+		[DefaultValue("localhost:2302")]
 		public string IP_Port {
 			get { return this.defaultIP_Port; }
 			set {
