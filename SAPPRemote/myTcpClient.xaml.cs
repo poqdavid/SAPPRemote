@@ -13,6 +13,7 @@ namespace SAPPRemote
 	using System.Text;
 	using System.Threading;
 	using System.Windows;
+	using System.Windows.Controls;
 	
 	// State object for receiving data from remote device.
 	public  class StateObject
@@ -56,10 +57,8 @@ namespace SAPPRemote
 
 			string ip = ip_port.Split(':')[0];
 			int port = int.Parse(ip_port.Split(':')[1]);
-				
-			IPAddress ipAddress = IPAddress.Parse(ip);
 
-			clientSocket.BeginConnect(ipAddress, port, new AsyncCallback(ConnectCallback), clientSocket.Client);
+			clientSocket.BeginConnect(ip, port, new AsyncCallback(ConnectCallback), clientSocket.Client);
 			connectDone.WaitOne();
 			Receive(clientSocket.Client);
             
@@ -189,6 +188,7 @@ namespace SAPPRemote
 			}
 		}
 
+        
 		public static void msg(string temp)
 		{
 			switch (Json.get_rco(temp)) {
@@ -212,8 +212,13 @@ namespace SAPPRemote
 								if (iSAPPRemoteUI.playerslist.ToList().Count == 0) {
 									foreach (PlayerData PD in SS.Players) {
 										if (!iSAPPRemoteUI.playerslist.ToList().Contains(PD)) {
-                                             
+
+
+											PD.CM = iSAPPRemoteUI.CM;
 											iSAPPRemoteUI.playerslist.Add(PD);
+                                            
+                                            
+											
                                             
 										}
 									}
@@ -223,12 +228,14 @@ namespace SAPPRemote
 							}
                             
 						} catch (Exception ex) {
+							MessageBox.Show(ex.Message);
 						}
 
                              
 						try {
                              
 							foreach (PlayerData PD in SS.Players) {
+								PD.CM = iSAPPRemoteUI.CM;
 								iSAPPRemoteUI.playerslist[Player.GetListIndex(iSAPPRemoteUI.playerslist, PD.Index)] = PD;
 
 							}
@@ -279,6 +286,7 @@ namespace SAPPRemote
 							PlayerData tempplayer = Player.GetData(temp);
 
 							if (!iSAPPRemoteUI.playerslist.ToList().Contains(tempplayer)) {
+								tempplayer.CM = iSAPPRemoteUI.CM;
 								iSAPPRemoteUI.playerslist.Add(tempplayer);
 							}
 							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Joined, Name: " + tempplayer.Name + Environment.NewLine);

@@ -10,6 +10,7 @@ namespace SAPPRemote
 	using System.Windows.Controls;
 	using System.Windows.Controls.Primitives;
 	using System.Collections;
+    using System.Windows.Threading;
 
 	public static class IEnumerableExtensions
 	{
@@ -105,4 +106,21 @@ namespace SAPPRemote
 			}
 		}
 	}
+
+ 
+
+    public static class DispatcherExtensions
+    {
+        public static void InvokeOrExecute(this Dispatcher dispatcher, Action action)
+        {
+            if (dispatcher.CheckAccess())
+            {
+                action();
+            }
+            else
+            {
+                dispatcher.BeginInvoke(DispatcherPriority.Normal, action);
+            }
+        }
+    }
 }
