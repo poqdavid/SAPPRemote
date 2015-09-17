@@ -200,7 +200,7 @@ namespace SAPPRemote
 
 		public void AppendConsoleText(string text)
 		{
-			textBox_console.CheckAppendText("> " + text + Environment.NewLine);
+			textBox_console.CheckAppendText("> " + text + "\n");
 		}
 		
 		public void SetServerStatText(string text)
