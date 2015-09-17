@@ -195,8 +195,8 @@ namespace SAPPRemote
 				case Server.RemoteConsoleOpcode.RC_LOGIN:
 					{
 						iSAPPRemoteUI.SetTitle(" > Online");
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> Connected to the server..." + Environment.NewLine);
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> Logged-in: Login LVL>" + Json.get_str(temp, "level") + Environment.NewLine);
+						iSAPPRemoteUI.textBox_console.CheckAppendText("> Connected to the server...\n");
+						iSAPPRemoteUI.textBox_console.CheckAppendText("> Logged-in: Login LVL>" + Json.get_str(temp, "level") + "\n");
 						loadplayerslist = true;
 						SendQUERY();
 					}
@@ -242,7 +242,7 @@ namespace SAPPRemote
 						} catch (Exception ex) {
 							 
 						}
-						// textBox_console.CheckAppendText("> " + temp + Environment.NewLine);
+						// textBox_console.CheckAppendText("> " + temp + "\n");
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_CIN:
@@ -252,7 +252,7 @@ namespace SAPPRemote
 					return;
 				case Server.RemoteConsoleOpcode.RC_COUT:
 					{
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> " + Json.get_str(temp, "text") + Environment.NewLine);
+						iSAPPRemoteUI.textBox_console.CheckAppendText("> " + Json.get_str(temp, "text") + "\n");
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_CHAT:
@@ -262,17 +262,17 @@ namespace SAPPRemote
 						switch (Json.get_int(temp, "type")) {
 							case 0: //All
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>All): " + Json.get_str(temp, "message") + Environment.NewLine);
+									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>All): " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 							case 1: //Team
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>Team): " + Json.get_str(temp, "message") + Environment.NewLine);
+									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>Team): " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 							case 2: //Vehicle
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>Vehicle): " + Json.get_str(temp, "message") + Environment.NewLine);
+									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>Vehicle): " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 						}
@@ -289,7 +289,7 @@ namespace SAPPRemote
 								tempplayer.CM = iSAPPRemoteUI.CM;
 								iSAPPRemoteUI.playerslist.Add(tempplayer);
 							}
-							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Joined, Name: " + tempplayer.Name + Environment.NewLine);
+							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Joined, Name: " + tempplayer.Name + "\n");
 							iSAPPRemoteUI.updater.Start();
 						} catch (Exception ex) {
 							 
@@ -306,7 +306,7 @@ namespace SAPPRemote
 							PlayerData PD = iSAPPRemoteUI.playerslist[pindex];
 							iSAPPRemoteUI.playerslist.RemoveAt(pindex);
 							 
-							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + Environment.NewLine);
+							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + "\n");
 							iSAPPRemoteUI.updater.Start();
 						} catch (Exception ex) {
 							 
@@ -343,7 +343,7 @@ namespace SAPPRemote
 							iSAPPRemoteUI.updater.Stop();
 							NG = Json.GetNewGame(temp);
 							foreach (PlayerData PD in iSAPPRemoteUI.playerslist.ToList()) {
-								iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + Environment.NewLine);
+								iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + "\n");
 							}
 							iSAPPRemoteUI.playerslist.Clear();
 							SS = NG.ToServerStat(SS);
@@ -357,7 +357,7 @@ namespace SAPPRemote
 					return;
 				default:
 					{
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> " + temp + Environment.NewLine);
+						iSAPPRemoteUI.textBox_console.CheckAppendText("> " + temp + "\n");
 					}
 					return;
 			}
