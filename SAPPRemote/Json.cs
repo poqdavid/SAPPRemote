@@ -7,6 +7,7 @@ namespace SAPPRemote
 {
 	using System;
 	using Newtonsoft.Json;
+	using Newtonsoft.Json.Converters;
 	using Newtonsoft.Json.Linq;
 
 	/// <summary>
@@ -110,7 +111,7 @@ namespace SAPPRemote
 		{
 			var s = new JsonSerializerSettings();
 			s.ObjectCreationHandling = ObjectCreationHandling.Replace; // without this, you end up with duplicates.
-
+			
 			return JsonConvert.SerializeObject(jsonobj, Formatting.None, s);
 		}
 
