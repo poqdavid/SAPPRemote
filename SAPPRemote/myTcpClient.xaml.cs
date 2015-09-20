@@ -13,6 +13,7 @@ namespace SAPPRemote
 	using System.Text;
 	using System.Threading;
 	using System.Windows;
+	using System.Windows.Controls;
 	
 	// State object for receiving data from remote device.
 	public  class StateObject
@@ -56,10 +57,8 @@ namespace SAPPRemote
 
 			string ip = ip_port.Split(':')[0];
 			int port = int.Parse(ip_port.Split(':')[1]);
-				
-			IPAddress ipAddress = IPAddress.Parse(ip);
 
-			clientSocket.BeginConnect(ipAddress, port, new AsyncCallback(ConnectCallback), clientSocket.Client);
+			clientSocket.BeginConnect(ip, port, new AsyncCallback(ConnectCallback), clientSocket.Client);
 			connectDone.WaitOne();
 			Receive(clientSocket.Client);
             
@@ -189,14 +188,15 @@ namespace SAPPRemote
 			}
 		}
 
+        
 		public static void msg(string temp)
 		{
 			switch (Json.get_rco(temp)) {
 				case Server.RemoteConsoleOpcode.RC_LOGIN:
 					{
 						iSAPPRemoteUI.SetTitle(" > Online");
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> Connected to the server..." + Environment.NewLine);
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> Logged-in: Login LVL>" + Json.get_str(temp, "level") + Environment.NewLine);
+						iSAPPRemoteUI.textBox_console.CheckAppendText("> Connected to the server...\n");
+						iSAPPRemoteUI.textBox_console.CheckAppendText("> Logged-in: Login LVL>" + Json.get_str(temp, "level") + "\n");
 						loadplayerslist = true;
 						SendQUERY();
 					}
@@ -212,8 +212,13 @@ namespace SAPPRemote
 								if (iSAPPRemoteUI.playerslist.ToList().Count == 0) {
 									foreach (PlayerData PD in SS.Players) {
 										if (!iSAPPRemoteUI.playerslist.ToList().Contains(PD)) {
-                                             
+
+
+											PD.CM = iSAPPRemoteUI.CM;
 											iSAPPRemoteUI.playerslist.Add(PD);
+                                            
+                                            
+											
                                             
 										}
 									}
@@ -223,19 +228,21 @@ namespace SAPPRemote
 							}
                             
 						} catch (Exception ex) {
+							MessageBox.Show(ex.Message);
 						}
 
                              
 						try {
                              
 							foreach (PlayerData PD in SS.Players) {
+								PD.CM = iSAPPRemoteUI.CM;
 								iSAPPRemoteUI.playerslist[Player.GetListIndex(iSAPPRemoteUI.playerslist, PD.Index)] = PD;
 
 							}
 						} catch (Exception ex) {
 							 
 						}
-						// textBox_console.CheckAppendText("> " + temp + Environment.NewLine);
+						// textBox_console.CheckAppendText("> " + temp + "\n");
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_CIN:
@@ -245,7 +252,7 @@ namespace SAPPRemote
 					return;
 				case Server.RemoteConsoleOpcode.RC_COUT:
 					{
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> " + Json.get_str(temp, "text") + Environment.NewLine);
+						iSAPPRemoteUI.textBox_console.CheckAppendText("> " + Json.get_str(temp, "text") + "\n");
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_CHAT:
@@ -255,17 +262,17 @@ namespace SAPPRemote
 						switch (Json.get_int(temp, "type")) {
 							case 0: //All
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>All): " + Json.get_str(temp, "message") + Environment.NewLine);
+									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>All): " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 							case 1: //Team
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>Team): " + Json.get_str(temp, "message") + Environment.NewLine);
+									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>Team): " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 							case 2: //Vehicle
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>Vehicle): " + Json.get_str(temp, "message") + Environment.NewLine);
+									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>Vehicle): " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 						}
@@ -279,9 +286,10 @@ namespace SAPPRemote
 							PlayerData tempplayer = Player.GetData(temp);
 
 							if (!iSAPPRemoteUI.playerslist.ToList().Contains(tempplayer)) {
+								tempplayer.CM = iSAPPRemoteUI.CM;
 								iSAPPRemoteUI.playerslist.Add(tempplayer);
 							}
-							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Joined, Name: " + tempplayer.Name + Environment.NewLine);
+							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Joined, Name: " + tempplayer.Name + "\n");
 							iSAPPRemoteUI.updater.Start();
 						} catch (Exception ex) {
 							 
@@ -298,7 +306,7 @@ namespace SAPPRemote
 							PlayerData PD = iSAPPRemoteUI.playerslist[pindex];
 							iSAPPRemoteUI.playerslist.RemoveAt(pindex);
 							 
-							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + Environment.NewLine);
+							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + "\n");
 							iSAPPRemoteUI.updater.Start();
 						} catch (Exception ex) {
 							 
@@ -335,7 +343,7 @@ namespace SAPPRemote
 							iSAPPRemoteUI.updater.Stop();
 							NG = Json.GetNewGame(temp);
 							foreach (PlayerData PD in iSAPPRemoteUI.playerslist.ToList()) {
-								iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + Environment.NewLine);
+								iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + "\n");
 							}
 							iSAPPRemoteUI.playerslist.Clear();
 							SS = NG.ToServerStat(SS);
@@ -349,7 +357,7 @@ namespace SAPPRemote
 					return;
 				default:
 					{
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> " + temp + Environment.NewLine);
+						iSAPPRemoteUI.textBox_console.CheckAppendText("> " + temp + "\n");
 					}
 					return;
 			}

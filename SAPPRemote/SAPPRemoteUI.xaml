@@ -40,7 +40,7 @@
 				<ListBox
 					Name="listBox_players"
 					VerticalContentAlignment="Top"
-					Width="157"
+					Width="126"
 					Grid.Column="1"
 					Grid.Row="1"
 					HorizontalAlignment="Right"
@@ -52,37 +52,30 @@
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<StackPanel
-								Orientation="Horizontal">
-								<Ellipse
-									Height="15"
-									Stroke="Black"
-									VerticalAlignment="Center"
-									Width="15"
-									Fill="{Binding Path=Team}"
-									HorizontalAlignment="Center" />
-								<Label
-									Tag="{Binding Index}"
-									Content="{Binding Name}"
-									ToolTipService.ToolTip="{Binding Path=Stats}"
-									Height="Auto" />
-								<Rectangle
+								Orientation="Horizontal" Height="Auto" ContextMenu="{Binding Path=CM}">
+                                <Rectangle
 									Height="15"
 									HorizontalAlignment="Center"
 									Stroke="Black"
 									VerticalAlignment="Center"
 									Width="15"
-									Fill="{Binding Path=PlayerColor}" />
+									Fill="{Binding Path=PlayerColor}" StrokeThickness="0" />
+                                <Label
+									Tag="{Binding Index}"
+									Content="{Binding Name}"
+									ToolTipService.ToolTip="{Binding Path=Stats}"
+									Height="Auto" />
 							</StackPanel>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
-				</ListBox>
+                </ListBox>
 				<TextBox
 					x:Name="textBox_console"
 					TextChanged="textBox_console_TextChanged"
 					TextWrapping="Wrap"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Stretch"
-					Margin="0,6,163,0"
+					Margin="0,6,132,0"
 					VerticalScrollBarVisibility="Auto"
 					Grid.Column="1"
 					Grid.Row="1"
