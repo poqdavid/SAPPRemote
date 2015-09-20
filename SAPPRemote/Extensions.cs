@@ -10,7 +10,7 @@ namespace SAPPRemote
 	using System.Windows.Controls;
 	using System.Windows.Controls.Primitives;
 	using System.Collections;
-    using System.Windows.Threading;
+	using System.Windows.Threading;
 
 	public static class IEnumerableExtensions
 	{
@@ -72,6 +72,18 @@ namespace SAPPRemote
 				winx.Dispatcher.BeginInvoke(settitle);
 			}
 		}
+		
+		public static void Set_Title(Window winx, string text, bool waitUntilReturn = false)
+		{
+			Action settitle = () => winx.Title = "SAPP Remote" + text;
+			if (winx.CheckAccess()) {
+				settitle();
+			} else if (waitUntilReturn) {
+				winx.Dispatcher.Invoke(settitle);
+			} else {
+				winx.Dispatcher.BeginInvoke(settitle);
+			}
+		}
     	
 	}
 
@@ -109,18 +121,15 @@ namespace SAPPRemote
 
  
 
-    public static class DispatcherExtensions
-    {
-        public static void InvokeOrExecute(this Dispatcher dispatcher, Action action)
-        {
-            if (dispatcher.CheckAccess())
-            {
-                action();
-            }
-            else
-            {
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, action);
-            }
-        }
-    }
+	public static class DispatcherExtensions
+	{
+		public static void InvokeOrExecute(this Dispatcher dispatcher, Action action)
+		{
+			if (dispatcher.CheckAccess()) {
+				action();
+			} else {
+				dispatcher.BeginInvoke(DispatcherPriority.Normal, action);
+			}
+		}
+	}
 }
