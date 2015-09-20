@@ -1,6 +1,16 @@
 {
-  "IP_Port": "127.0.0.1:12345",
-  "UserName": "lol",
-  "Password": "1234",
-  "AutoConnect": false
+  "IP_Port": "localhost:2302",
+  "UserName": "",
+  "Password": "",
+  "AutoConnect": false,
+  "MenuItems": [
+    {
+      "text": "Kick",
+      "command": "sv_kick %index"
+    },
+    {
+      "text": "Ban",
+      "command": "sv_ban %index"
+    }
+  ]
 }

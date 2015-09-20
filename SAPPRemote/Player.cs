@@ -13,6 +13,7 @@ namespace SAPPRemote
 	using Newtonsoft.Json;
 	using System.Collections;
 	using System.Collections.Specialized;
+	using System.Windows.Controls;
 
 	internal static class Player
 	{
@@ -92,9 +93,9 @@ namespace SAPPRemote
 
 	public class iColor
 	{
-		private int defaultB = 0;
-		private int defaultG = 0;
-		private int defaultR = 0;
+		private int defaultB = 255;
+		private int defaultG = 255;
+		private int defaultR = 255;
 
 		[JsonProperty("b")]
 		public int B { get { return this.defaultB; } set { this.defaultB = value; } }
@@ -111,7 +112,8 @@ namespace SAPPRemote
 		private int defaultAssists = 0;
 		private int defaultBetrays = 0;
 		private iColor defaultColor = new iColor();
-		private SolidColorBrush defaultiTeam = Brushes.Black;
+		private SolidColorBrush defaultiTeam = Brushes.Transparent;
+		private static ContextMenu defaultCM;
 		private int defaultDeaths = 0;
 		private int defaultIndex = 0;
 		private int defaultKills = 0;
@@ -152,6 +154,9 @@ namespace SAPPRemote
 
 		[JsonProperty("team")]
 		public int iTeam { get { return this.defaultTeam; } set { this.defaultTeam = value; } }
+
+		[JsonIgnore]
+		public ContextMenu CM { get { return defaultCM; } set { defaultCM = value; } }
 
 		[JsonIgnore]
 		public SolidColorBrush Team {

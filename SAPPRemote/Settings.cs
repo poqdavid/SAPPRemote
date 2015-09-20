@@ -14,6 +14,7 @@ namespace SAPPRemote
 	using Newtonsoft.Json.Linq;
 	using System.Windows.Controls;
 	using System.Windows;
+	using System.Collections.Generic;
 
 	/// <summary>
 	/// And this part is for the settings :)
@@ -45,6 +46,14 @@ namespace SAPPRemote
 		/// Default value for AutoConnect.
 		///</summary>
 		private bool? defaultAutoConnect = false;
+
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private List<iMenuData> defaultiMenuItems = new List<iMenuData>(new iMenuData[] {
+			new iMenuData("Kick", "sv_kick %index"),
+			new iMenuData("Ban", "sv_ban %index")
+		});
 
 		///<summary>
 		/// Gets or sets the IP_Port property.
@@ -102,6 +111,13 @@ namespace SAPPRemote
 			}
 		}
 
+		///<summary>
+		/// Gets or sets a value indicating whether to use   or not.
+		///</summary>
+		///<value>Use .</value>
+		[JsonProperty("MenuItems")]
+		public List<iMenuData> iMenuItems { get { return this.defaultiMenuItems; } set { this.defaultiMenuItems = value; } }
+
 		/// <summary>
 		/// Saves the plugin settings in selected path.
 		/// </summary>
@@ -148,5 +164,23 @@ namespace SAPPRemote
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+	}
+	public class iMenuData
+	{
+		public iMenuData(string text, string command)
+		{
+			this.Text = text;
+			this.Command = command;
+		}
+
+		private string defaultText = "";
+		private string defaultCommand = "";
+
+		[JsonProperty("text")]
+		public string Text { get { return this.defaultText; } set { this.defaultText = value; } }
+
+		[JsonProperty("command")]
+		public string Command { get { return this.defaultCommand; } set { this.defaultCommand = value; } }
+    
 	}
 }
