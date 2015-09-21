@@ -69,15 +69,14 @@ namespace SAPPRemote
 		
 		public static void Disconnect()
 		{
-
 			try {
 
 				iSAPPRemoteUI.updater.Stop();
 				iSAPPRemoteUI.playerslist.Clear();
 
 				iSAPPRemoteUI.SetTitle("SAPP Remote > Offline");
-				iSAPPRemoteUI.SetServerStatText("Disconnect...");
-				iSAPPRemoteUI.AppendConsoleText("Disconnect from server...");
+				iSAPPRemoteUI.SetServerStatText("Not connected to any server");
+                iSAPPRemoteUI.textBox_console.CheckAppendText("Disconnected from the server.\n");
 				
 				clientSocket.Close();
 				clientSocket.Client.Shutdown(SocketShutdown.Both);
@@ -200,8 +199,8 @@ namespace SAPPRemote
 				case Server.RemoteConsoleOpcode.RC_LOGIN:
 					{
 						iSAPPRemoteUI.SetTitle(" > Online");
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> Connected to the server...\n");
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> Logged-in: Login LVL>" + Json.get_str(temp, "level") + "\n");
+						iSAPPRemoteUI.textBox_console.CheckAppendText("Connected to the server.\n");
+						iSAPPRemoteUI.textBox_console.CheckAppendText("Logged in, admin level: " + Json.get_str(temp, "level") + "\n");
 						loadplayerslist = true;
 						SendQUERY();
 					}
@@ -247,7 +246,6 @@ namespace SAPPRemote
 						} catch (Exception ex) {
 							 
 						}
-						// textBox_console.CheckAppendText("> " + temp + "\n");
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_CIN:
@@ -267,22 +265,26 @@ namespace SAPPRemote
 						switch (Json.get_int(temp, "type")) {
 							case 0: //All
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText(PD.Name + " (Chat>All): " + Json.get_str(temp, "message") + "\n");
+									iSAPPRemoteUI.textBox_console.CheckAppendText("[GLOBAL] " + PD.Name + ": " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 							case 1: //Team
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText(PD.Name + " (Chat>Team): " + Json.get_str(temp, "message") + "\n");
+									iSAPPRemoteUI.textBox_console.CheckAppendText("[TEAM] " + PD.Name + ": " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 							case 2: //Vehicle
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText(PD.Name + " (Chat>Vehicle): " + Json.get_str(temp, "message") + "\n");
+									iSAPPRemoteUI.textBox_console.CheckAppendText("[VEHICLE] " + PD.Name + ": " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
-						}
+                            default:
+                                {
+                                    iSAPPRemoteUI.textBox_console.CheckAppendText("[OTHER] " + PD.Name + ": " + Json.get_str(temp, "message") + "\n");
+                                }
+                                return;
+                        }
 					}
-					return;
 				case Server.RemoteConsoleOpcode.RC_PJOIN:
 					{
 						
@@ -349,7 +351,7 @@ namespace SAPPRemote
 							iSAPPRemoteUI.updater.Stop();
 							NG = Json.GetNewGame(temp);
 							foreach (PlayerData PD in iSAPPRemoteUI.playerslist.ToList()) {
-								iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + "\n");
+								iSAPPRemoteUI.textBox_console.CheckAppendText("Player Quit, Name: " + PD.Name + "\n");
 							}
 							iSAPPRemoteUI.playerslist.Clear();
 							SS = NG.ToServerStat(SS);
