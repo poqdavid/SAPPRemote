@@ -2,42 +2,42 @@
 <Window
 	x:Class="SAPPRemote.SAPPRemoteUI" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:System="clr-namespace:System;assembly=mscorlib"
 	Title="SAPP Remote"
-	Height="431"
+	Height="512"
 	x:Name="window_client"
 	Closing="window_client_Closing"
 	ResizeMode="CanResize"
-	Width="867"
+	Width="768"
 	Loaded="window_client_Loaded">
-	<Grid
+    <Grid
 		Name="main_grid">
-		<DockPanel>
-			<Grid
+        <DockPanel>
+            <Grid
 				HorizontalAlignment="Stretch"
 				VerticalAlignment="Stretch"
 				Margin="5,36,10,55">
-				<Grid.RowDefinitions>
-					<RowDefinition
+                <Grid.RowDefinitions>
+                    <RowDefinition
 						Height="Auto" />
-					<RowDefinition
+                    <RowDefinition
 						Height="277*" />
-					<RowDefinition
+                    <RowDefinition
 						Height="*" />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
 						Width="Auto" />
-					<ColumnDefinition />
-				</Grid.ColumnDefinitions>
-				<Expander
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Expander
 					Header="Server Info"
 					Grid.Column="1"
 					Margin="0,0,6,0">
-					<TextBlock
+                    <TextBlock
 						Margin="24 6 0 0"
 						Name="textblock_serverstat"
 						Text="Not connected..." />
-				</Expander>
-				<ListBox
+                </Expander>
+                <ListBox
 					Name="listBox_players"
 					VerticalContentAlignment="Top"
 					Width="126"
@@ -49,9 +49,9 @@
 					DataContext="{Binding playerslist}"
 					ItemsSource="{Binding}"
 					FontFamily="Segoe UI">
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<StackPanel
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel
 								Orientation="Horizontal" Height="Auto" ContextMenu="{Binding Path=CM}">
                                 <Rectangle
 									Height="15"
@@ -65,11 +65,11 @@
 									Content="{Binding Name}"
 									ToolTipService.ToolTip="{Binding Path=Stats}"
 									Height="Auto" />
-							</StackPanel>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
-				<TextBox
+                <TextBox
 					x:Name="textBox_console"
 					TextChanged="textBox_console_TextChanged"
 					TextWrapping="Wrap"
@@ -81,16 +81,16 @@
 					Grid.Row="1"
 					IsReadOnlyCaretVisible="True"
 					IsReadOnly="True" />
-			</Grid>
-		</DockPanel>
-		<ToolBar
+            </Grid>
+        </DockPanel>
+        <ToolBar
 			Height="30"
 			Width="Auto"
 			DockPanel.Dock="Top"
 			VerticalAlignment="Top"
 			UseLayoutRounding="False"
 			DataContext="{Binding}">
-			<TextBox
+            <TextBox
 				Name="textBox_ip_port"
 				Height="Auto"
 				Width="150"
@@ -101,33 +101,32 @@
 				DataContext="{Binding Path=iSettings.IP_Port}"
 				TextChanged="textBox_ip_port_TextChanged"
 				BorderBrush="#FFABADB3" />
-			<TextBox
+            <TextBox
 				Name="textBox_username"
 				Height="Auto"
-				Text=""
 				Width="150"
 				DataContext="{Binding iSettings.UserName}"
 				TextChanged="textBox_username_TextChanged"
 				BorderBrush="#FFABADB3" />
-			<PasswordBox
+            <PasswordBox
 				Name="textBox_password"
-				Height="21"
-				Width="250"
+				Height="Auto"
+				Width="150"
 				PasswordChanged="textBox_password_PasswordChanged"
 				VerticalAlignment="Center"
 				HorizontalAlignment="Center" />
-			<CheckBox
+            <CheckBox
 				Content="Auto Connect"
 				Name="checkbox_autoconnect"
 				Click="checkbox_autoconnect_Click" />
-			<Button
+            <Button
 				x:Name="button_connect"
 				Content="Connect"
 				Click="button_connect_Click"
 				Height="Auto"
 				Width="58"
 				RenderTransformOrigin="0.5,0.5" />
-			<Button
+            <Button
 				x:Name="button_disconnect"
 				Content="Disconnect"
 				Click="button_disconnect_Click"
@@ -136,7 +135,7 @@
 				FlowDirection="LeftToRight"
 				HorizontalContentAlignment="Center"
 				RenderTransformOrigin="0.5,0.5" />
-			<Button
+            <Button
 				x:Name="button_refresh"
 				Content="Refresh"
 				Width="65"
@@ -145,15 +144,15 @@
 				HorizontalContentAlignment="Center"
 				RenderTransformOrigin="0.5,0.5"
 				Click="button_refresh_Click" />
-		</ToolBar>
-		<Grid
+        </ToolBar>
+        <Grid
 			Height="37"
 			Grid.Column="0"
 			Grid.Row="0"
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Bottom"
 			Margin="5,0,10,10">
-			<TextBox
+            <TextBox
 				Name="textBox_command"
 				KeyUp="textBox_command_KeyUp"
 				Height="23"
@@ -162,6 +161,6 @@
 				HorizontalAlignment="Stretch"
 				VerticalAlignment="Top"
 				Margin="0,7,0,0" />
-		</Grid>
-	</Grid>
+        </Grid>
+    </Grid>
 </Window>

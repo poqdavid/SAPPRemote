@@ -197,11 +197,6 @@ namespace SAPPRemote
 			} catch (Exception) {
 			}
 		}
-
-		public void AppendConsoleText(string text)
-		{
-			textBox_console.CheckAppendText("> " + text + "\n");
-		}
 		
 		public void SetServerStatText(string text)
 		{

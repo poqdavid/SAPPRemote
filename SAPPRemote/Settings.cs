@@ -51,9 +51,10 @@ namespace SAPPRemote
 		/// Default value for .
 		///</summary>
 		private List<iMenuData> defaultiMenuItems = new List<iMenuData>(new iMenuData[] {
-			new iMenuData("Kick", "sv_kick %index"),
-			new iMenuData("Ban", "sv_ban %index")
-		});
+			new iMenuData("Kick", "k %index"),
+			new iMenuData("Ban", "b %index"),
+            new iMenuData("IP-Ban", "ipban %index")
+        });
 
 		///<summary>
 		/// Gets or sets the IP_Port property.
