@@ -19,7 +19,7 @@ namespace SAPPRemote
 	public  class StateObject
 	{
 		// Client socket.
-		public   Socket workSocket = null;
+		public  TcpClient workSocket = null;
 		// Size of receive buffer.
 		public const int BufferSize = 256;
 		// Receive buffer.
@@ -38,7 +38,7 @@ namespace SAPPRemote
 		private static ManualResetEvent receiveDone = new ManualResetEvent(false);
 		
 		private static SAPPRemote.SAPPRemoteUI iSAPPRemoteUI = new SAPPRemoteUI();
-		
+		private static bool isConnected = false;
 		public static System.Net.Sockets.TcpClient clientSocket;
 		
 		public static ServerStat SS = new ServerStat();
@@ -74,9 +74,11 @@ namespace SAPPRemote
 				iSAPPRemoteUI.updater.Stop();
 				iSAPPRemoteUI.playerslist.Clear();
 
-				iSAPPRemoteUI.SetTitle("SAPP Remote > Offline");
-				iSAPPRemoteUI.SetServerStatText("Not connected to any server");
-                iSAPPRemoteUI.textBox_console.CheckAppendText("Disconnected from the server.\n");
+				if (isConnected) {
+					iSAPPRemoteUI.SetTitle("SAPP Remote > Offline");
+					iSAPPRemoteUI.SetServerStatText("Not connected to any server");
+					iSAPPRemoteUI.textBox_console.CheckAppendText("Disconnected from the server.\n");
+				}
 				
 				clientSocket.Close();
 				clientSocket.Client.Shutdown(SocketShutdown.Both);
@@ -84,6 +86,8 @@ namespace SAPPRemote
 			} catch (Exception) {
 			
 			}
+			isConnected = false;
+			
 		}
  
 		private static void ConnectCallback(IAsyncResult ar)
@@ -94,8 +98,9 @@ namespace SAPPRemote
 
 				client.EndConnect(ar);
 
-				Send(clientSocket.Client, Json.GenerateString(new Login(SAPPRemoteUI.ISettings.UserName, SAPPRemoteUI.CreateMD5(SAPPRemoteUI.ISettings.Password))));
-				Receive(clientSocket.Client);
+				Send(clientSocket, Json.GenerateString(new Login(SAPPRemoteUI.ISettings.UserName, SAPPRemoteUI.CreateMD5(SAPPRemoteUI.ISettings.Password))));
+				Receive(clientSocket);
+				isConnected = true;
 				//connectDone.Set();
 			} catch (Exception ex) {
 				//connectDone.Set();
@@ -109,12 +114,12 @@ namespace SAPPRemote
 		
 
 		
-		public static void Send(Socket client, String data)
+		public static void Send(TcpClient client, String data)
 		{
 			try {
 				byte[] byteData = Encoding.UTF8.GetBytes(data);
 
-				client.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), client);
+				client.Client.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), client);
 				sendDone.WaitOne();
 			} catch (Exception) {
 			}
@@ -123,9 +128,9 @@ namespace SAPPRemote
 		private static void SendCallback(IAsyncResult ar)
 		{
 			try {
-				Socket client = (Socket)ar.AsyncState;
+				TcpClient client = (TcpClient)ar.AsyncState;
 
-				client.EndSend(ar);
+				client.Client.EndSend(ar);
 				 
 				sendDone.Set();
 			} catch (Exception ex) {
@@ -136,24 +141,24 @@ namespace SAPPRemote
 
 		public static void SendQUERY()
 		{
-			Send(clientSocket.Client, Json.GenerateString(new { opcode = Server.RemoteConsoleOpcode.RC_QUERY }));
+			Send(clientSocket, Json.GenerateString(new { opcode = Server.RemoteConsoleOpcode.RC_QUERY }));
 
 		}
 		public static void SendQUERY_STATS()
 		{
-			Send(clientSocket.Client, Json.GenerateString(new { opcode = Server.RemoteConsoleOpcode.RC_QUERY_STATS }));
+			Send(clientSocket, Json.GenerateString(new { opcode = Server.RemoteConsoleOpcode.RC_QUERY_STATS }));
  
 		}
 		
 		static bool loadplayerslist = false;
 		
-		private static void Receive(Socket client)
+		private static void Receive(TcpClient client)
 		{
 			try {
 				StateObject state = new StateObject();
 				state.workSocket = client;
 				
-				client.BeginReceive(state.buffer, 0, StateObject.BufferSize, SocketFlags.None, new AsyncCallback(ReceiveCallback), state);
+				client.Client.BeginReceive(state.buffer, 0, StateObject.BufferSize, SocketFlags.None, new AsyncCallback(ReceiveCallback), state);
 				
 				receiveDone.WaitOne();
 			} catch (Exception ex) {
@@ -165,12 +170,13 @@ namespace SAPPRemote
 		{
 			try {
 				StateObject state = (StateObject)ar.AsyncState;
-				Socket client = state.workSocket;
+				TcpClient client = state.workSocket;
 
-				int bytesRead = client.EndReceive(ar);
+				int bytesRead = client.Client.EndReceive(ar);
 				
 				if (bytesRead > 0) {
-					state.sb += Encoding.UTF8.GetString(state.buffer, 0, bytesRead);
+					state.sb += Encoding.Default.GetString(state.buffer, 0, bytesRead);
+					 
 					if (state.sb.Contains("\n")) {
 						if (state.sb.Length > 1) {
 							response = state.sb;
@@ -184,7 +190,7 @@ namespace SAPPRemote
 							receiveDone.Set();
 						}
 					}  
-					client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
+					client.Client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
 				} 
  
 			} catch (Exception ex) {
@@ -216,13 +222,8 @@ namespace SAPPRemote
 								if (iSAPPRemoteUI.playerslist.ToList().Count == 0) {
 									foreach (PlayerData PD in SS.Players) {
 										if (!iSAPPRemoteUI.playerslist.ToList().Contains(PD)) {
-
-
 											PD.CM = iSAPPRemoteUI.CM;
 											iSAPPRemoteUI.playerslist.Add(PD);
-                                            
-                                            
-											
                                             
 										}
 									}
@@ -278,12 +279,12 @@ namespace SAPPRemote
 									iSAPPRemoteUI.textBox_console.CheckAppendText("[VEHICLE] " + PD.Name + ": " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
-                            default:
-                                {
-                                    iSAPPRemoteUI.textBox_console.CheckAppendText("[OTHER] " + PD.Name + ": " + Json.get_str(temp, "message") + "\n");
-                                }
-                                return;
-                        }
+							default:
+								{
+									iSAPPRemoteUI.textBox_console.CheckAppendText("[OTHER] " + PD.Name + ": " + Json.get_str(temp, "message") + "\n");
+								}
+								return;
+						}
 					}
 				case Server.RemoteConsoleOpcode.RC_PJOIN:
 					{
@@ -335,7 +336,9 @@ namespace SAPPRemote
 							iSAPPRemoteUI.playerslist.RemoveAt(pindex);
 
 							PD.iPlayerColor = Player.GetColor(Player.GetTeamColor(TC.iTeam));
- 
+							 
+
+							iSAPPRemoteUI.textBox_console.CheckAppendText(PD.Name + " changed to " + Player.GetTeamText(TC.iTeam) + " team\n");
 							iSAPPRemoteUI.playerslist.Add(PD);
 							
 							iSAPPRemoteUI.updater.Start();
