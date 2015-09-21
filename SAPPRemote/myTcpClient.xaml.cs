@@ -171,7 +171,7 @@ namespace SAPPRemote
 				int bytesRead = client.EndReceive(ar);
 				
 				if (bytesRead > 0) {
-					state.sb += Encoding.UTF7.GetString(state.buffer, 0, bytesRead);
+					state.sb += Encoding.UTF8.GetString(state.buffer, 0, bytesRead);
 					if (state.sb.Contains("\n")) {
 						if (state.sb.Length > 1) {
 							response = state.sb;
