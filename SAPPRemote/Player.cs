@@ -35,7 +35,7 @@ namespace SAPPRemote
 			int g = (int)color.Color.G;
 			int b = (int)color.Color.B;
 			
-			iColor ic = new iColor(r,g,b);
+			iColor ic = new iColor(r, g, b);
 			 
 			return ic;
 		}
@@ -50,6 +50,19 @@ namespace SAPPRemote
 					return Brushes.Black;
 			}
 		}
+		
+		internal static string GetTeamText(int code)
+		{
+			switch (code) {
+				case 0:
+					return "Red";
+				case 1:
+					return "Blue";
+				default:
+					return "None";
+			}
+		}
+		
 		internal static int GetListIndex(ObservableCollection<PlayerData> plist, int pindex)
 		{
 			int temp = -1;
@@ -130,7 +143,7 @@ namespace SAPPRemote
 	{
 		private int defaultAssists = 0;
 		private int defaultBetrays = 0;
-		private iColor defaultColor = new iColor(255,255,255);
+		private iColor defaultColor = new iColor(255, 255, 255);
 		private SolidColorBrush defaultiTeam = Brushes.Transparent;
 		private static ContextMenu defaultCM;
 		private int defaultDeaths = 0;
