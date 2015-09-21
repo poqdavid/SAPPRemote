@@ -152,25 +152,14 @@ namespace SAPPRemote
 				if (e.Key == Key.Enter) {
 					
 					outText = Json.GenerateString(new Command(textBox_command.Text));
-					myTcpClient.Send(myTcpClient.clientSocket.Client, outText);
+					myTcpClient.Send(myTcpClient.clientSocket, outText);
 					textBox_command.Text = "";
-					
-				} else {
-					if (e.Key == Key.LeftShift) {
-						outText = textBox_command.Text;
-						myTcpClient.Send(myTcpClient.clientSocket.Client, outText);
-						textBox_command.Text = "";
-					}
-				}
+				} 
 
 			} catch (Exception) {
 				myTcpClient.Disconnect();
 				if (e.Key == Key.Enter) {
 					textBox_command.Text = "";
-				} else {
-					if (e.Key == Key.LeftShift) {
-						textBox_command.Text = "";
-					}
 				}
 			}
 		}
@@ -239,7 +228,7 @@ namespace SAPPRemote
 			PlayerData PD = (PlayerData)listBox_players.SelectedItem;
 			string outText = "";
 			outText = Json.GenerateString(new Command(temp.Tag.ToString().Replace("%index", PD.Index.ToString()).Replace("%name", PD.Name)));
-			myTcpClient.Send(myTcpClient.clientSocket.Client, outText);
+			myTcpClient.Send(myTcpClient.clientSocket, outText);
            
 		}
 
