@@ -76,7 +76,7 @@ namespace SAPPRemote
 
 				iSAPPRemoteUI.SetTitle("SAPP Remote > Offline");
 				iSAPPRemoteUI.SetServerStatText("Not connected to any server");
-                iSAPPRemoteUI.textBox_console.CheckAppendText("Disconnected from the server.\n");
+				iSAPPRemoteUI.textBox_console.CheckAppendText("Disconnected from the server.\n");
 				
 				clientSocket.Close();
 				clientSocket.Client.Shutdown(SocketShutdown.Both);
@@ -170,7 +170,9 @@ namespace SAPPRemote
 				int bytesRead = client.EndReceive(ar);
 				
 				if (bytesRead > 0) {
-					state.sb += Encoding.UTF8.GetString(state.buffer, 0, bytesRead);
+
+					state.sb += Encoding.Default.GetString(state.buffer, 0, bytesRead);
+
 					if (state.sb.Contains("\n")) {
 						if (state.sb.Length > 1) {
 							response = state.sb;
@@ -216,13 +218,8 @@ namespace SAPPRemote
 								if (iSAPPRemoteUI.playerslist.ToList().Count == 0) {
 									foreach (PlayerData PD in SS.Players) {
 										if (!iSAPPRemoteUI.playerslist.ToList().Contains(PD)) {
-
-
 											PD.CM = iSAPPRemoteUI.CM;
 											iSAPPRemoteUI.playerslist.Add(PD);
-                                            
-                                            
-											
                                             
 										}
 									}
@@ -278,12 +275,12 @@ namespace SAPPRemote
 									iSAPPRemoteUI.textBox_console.CheckAppendText("[VEHICLE] " + PD.Name + ": " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
-                            default:
-                                {
-                                    iSAPPRemoteUI.textBox_console.CheckAppendText("[OTHER] " + PD.Name + ": " + Json.get_str(temp, "message") + "\n");
-                                }
-                                return;
-                        }
+							default:
+								{
+									iSAPPRemoteUI.textBox_console.CheckAppendText("[OTHER] " + PD.Name + ": " + Json.get_str(temp, "message") + "\n");
+								}
+								return;
+						}
 					}
 				case Server.RemoteConsoleOpcode.RC_PJOIN:
 					{
@@ -335,7 +332,9 @@ namespace SAPPRemote
 							iSAPPRemoteUI.playerslist.RemoveAt(pindex);
 
 							PD.iPlayerColor = Player.GetColor(Player.GetTeamColor(TC.iTeam));
- 
+							 
+
+							iSAPPRemoteUI.textBox_console.CheckAppendText(PD.Name + " changed to " + Player.GetTeamText(TC.iTeam) + " team\n");
 							iSAPPRemoteUI.playerslist.Add(PD);
 							
 							iSAPPRemoteUI.updater.Start();
