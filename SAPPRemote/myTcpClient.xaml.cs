@@ -59,8 +59,9 @@ namespace SAPPRemote
 			int port = int.Parse(ip_port.Split(':')[1]);
 
 			clientSocket.BeginConnect(ip, port, new AsyncCallback(ConnectCallback), clientSocket.Client);
-			connectDone.WaitOne();
-			Receive(clientSocket.Client);
+			 
+			//connectDone.WaitOne();
+			
             
 			iSAPPRemoteUI.updater.Start();
 			iSAPPRemoteUI.SetServerStatText("Server stats loading...");
@@ -68,14 +69,15 @@ namespace SAPPRemote
 		
 		public static void Disconnect()
 		{
+
 			try {
-				iSAPPRemoteUI.Title = "SAPP Remote > Offline";
-		      
+
 				iSAPPRemoteUI.updater.Stop();
 				iSAPPRemoteUI.playerslist.Clear();
+
+				iSAPPRemoteUI.SetTitle("SAPP Remote > Offline");
 				iSAPPRemoteUI.SetServerStatText("Disconnect...");
 				iSAPPRemoteUI.AppendConsoleText("Disconnect from server...");
-				
 				
 				clientSocket.Close();
 				clientSocket.Client.Shutdown(SocketShutdown.Both);
@@ -94,13 +96,16 @@ namespace SAPPRemote
 				client.EndConnect(ar);
 
 				Send(clientSocket.Client, Json.GenerateString(new Login(SAPPRemoteUI.ISettings.UserName, SAPPRemoteUI.CreateMD5(SAPPRemoteUI.ISettings.Password))));
-
-				connectDone.Set();
+				Receive(clientSocket.Client);
+				//connectDone.Set();
 			} catch (Exception ex) {
-				MessageBox.Show(ex.Message, "SAPPRemote>ConnectCallback", MessageBoxButton.OK, MessageBoxImage.Error); 
-				connectDone.Set();
+				//connectDone.Set();
 				Disconnect();
+				MessageBox.Show(ex.Message, "SAPPRemote>ConnectCallback", MessageBoxButton.OK, MessageBoxImage.Error); 
+				
+				
 			}
+			connectDone.Set();
 		}
 		
 
@@ -252,7 +257,7 @@ namespace SAPPRemote
 					return;
 				case Server.RemoteConsoleOpcode.RC_COUT:
 					{
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> " + Json.get_str(temp, "text") + "\n");
+						iSAPPRemoteUI.textBox_console.CheckAppendText(Json.get_str(temp, "text") + "\n");
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_CHAT:
@@ -262,17 +267,17 @@ namespace SAPPRemote
 						switch (Json.get_int(temp, "type")) {
 							case 0: //All
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>All): " + Json.get_str(temp, "message") + "\n");
+									iSAPPRemoteUI.textBox_console.CheckAppendText(PD.Name + " (Chat>All): " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 							case 1: //Team
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>Team): " + Json.get_str(temp, "message") + "\n");
+									iSAPPRemoteUI.textBox_console.CheckAppendText(PD.Name + " (Chat>Team): " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 							case 2: //Vehicle
 								{
-									iSAPPRemoteUI.textBox_console.CheckAppendText("> " + PD.Name + " (Chat>Vehicle): " + Json.get_str(temp, "message") + "\n");
+									iSAPPRemoteUI.textBox_console.CheckAppendText(PD.Name + " (Chat>Vehicle): " + Json.get_str(temp, "message") + "\n");
 								}
 								return;
 						}
@@ -289,7 +294,7 @@ namespace SAPPRemote
 								tempplayer.CM = iSAPPRemoteUI.CM;
 								iSAPPRemoteUI.playerslist.Add(tempplayer);
 							}
-							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Joined, Name: " + tempplayer.Name + "\n");
+							iSAPPRemoteUI.textBox_console.CheckAppendText("Player Joined, Name: " + tempplayer.Name + "\n");
 							iSAPPRemoteUI.updater.Start();
 						} catch (Exception ex) {
 							 
@@ -306,7 +311,7 @@ namespace SAPPRemote
 							PlayerData PD = iSAPPRemoteUI.playerslist[pindex];
 							iSAPPRemoteUI.playerslist.RemoveAt(pindex);
 							 
-							iSAPPRemoteUI.textBox_console.CheckAppendText("> Player Quit, Name: " + PD.Name + "\n");
+							iSAPPRemoteUI.textBox_console.CheckAppendText("Player Quit, Name: " + PD.Name + "\n");
 							iSAPPRemoteUI.updater.Start();
 						} catch (Exception ex) {
 							 
@@ -326,7 +331,8 @@ namespace SAPPRemote
 							PD = iSAPPRemoteUI.playerslist[pindex];
 							 
 							iSAPPRemoteUI.playerslist.RemoveAt(pindex);
-							PD.iTeam = TC.iTeam;
+
+							PD.iPlayerColor = Player.GetColor(Player.GetTeamColor(TC.iTeam));
  
 							iSAPPRemoteUI.playerslist.Add(PD);
 							
@@ -357,7 +363,7 @@ namespace SAPPRemote
 					return;
 				default:
 					{
-						iSAPPRemoteUI.textBox_console.CheckAppendText("> " + temp + "\n");
+						iSAPPRemoteUI.textBox_console.CheckAppendText(temp + "\n");
 					}
 					return;
 			}

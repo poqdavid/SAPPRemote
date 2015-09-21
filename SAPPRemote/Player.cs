@@ -28,6 +28,17 @@ namespace SAPPRemote
 			brush.Freeze();
 			return brush;
 		}
+		
+		internal static iColor GetColor(SolidColorBrush color)
+		{
+			int r = (int)color.Color.R;
+			int g = (int)color.Color.G;
+			int b = (int)color.Color.B;
+			
+			iColor ic = new iColor(r,g,b);
+			 
+			return ic;
+		}
 		internal static SolidColorBrush GetTeamColor(int color_code)
 		{
 			switch (color_code) {
@@ -96,6 +107,14 @@ namespace SAPPRemote
 		private int defaultB = 255;
 		private int defaultG = 255;
 		private int defaultR = 255;
+		
+		public iColor(int r, int g, int b)
+		{
+			this.R = r;
+			this.G = g;
+			this.B = b;
+		}
+		
 
 		[JsonProperty("b")]
 		public int B { get { return this.defaultB; } set { this.defaultB = value; } }
@@ -111,7 +130,7 @@ namespace SAPPRemote
 	{
 		private int defaultAssists = 0;
 		private int defaultBetrays = 0;
-		private iColor defaultColor = new iColor();
+		private iColor defaultColor = new iColor(255,255,255);
 		private SolidColorBrush defaultiTeam = Brushes.Transparent;
 		private static ContextMenu defaultCM;
 		private int defaultDeaths = 0;
