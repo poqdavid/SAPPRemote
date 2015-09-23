@@ -294,7 +294,7 @@ namespace SAPPRemote
 		
 		public override string ToString()
 		{
-			return string.Format("Game: {8}\nSAPP Version {0}\nServer Name: {1}\nMap: {2} | GameType: {4}\nNoLead: {6} | Anticheat: {7}", this.SappVersion, this.ServerName, this.Map, this.Mode, this.GameType.ToUpper(), this.Players.Count, (this.NoLead ? "ON" : "OFF"), (this.AntiCheat ? "ON" : "OFF"), (this.Running ? "Running" : "Not Running"));
+			return string.Format("Game: {8}\nSAPP Version {0}\nServer Name: {1}\nMap: {2} | Gametype: {3}({4})\nNoLead: {6} | Anticheat: {7}", this.SappVersion, this.ServerName, this.Map, this.Mode, this.GameType, this.Players.Count, (this.NoLead ? "ON" : "OFF"), (this.AntiCheat ? "ON" : "OFF"), (this.Running ? "Running" : "Not Running"));
 		}
     
 	}
@@ -317,7 +317,7 @@ namespace SAPPRemote
 		public Server.RemoteConsoleOpcode opCode { get; set; }
 
 		[JsonProperty("team")]
-		public int iTeam { get { return this.defaultTeam; } set { this.defaultTeam = value; } }	
+		public int iTeam { get { return this.defaultTeam; } set { this.defaultTeam = value; } }
 
 	}
 
@@ -368,6 +368,11 @@ namespace SAPPRemote
 			temp.Map = this.Map;
 			temp.Mode = this.Mode;
 			return temp;
+		}
+		
+		public override string ToString()
+		{
+			return string.Format("Map: {0}, Gametype: {1}({2})", this.Map, this.Mode, this.GameType);
 		}
 	}
 
