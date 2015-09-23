@@ -117,7 +117,7 @@ namespace SAPPRemote
 		public static void Send(TcpClient client, String data)
 		{
 			try {
-				byte[] byteData = Encoding.UTF8.GetBytes(data);
+				byte[] byteData = Encoding.UTF8.GetBytes(data + '\n');
 
 				client.Client.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), client);
 				sendDone.WaitOne();
@@ -235,10 +235,8 @@ namespace SAPPRemote
 						} catch (Exception ex) {
 							MessageBox.Show(ex.Message);
 						}
-
                              
-						try {
-                             
+						try {                            
 							foreach (PlayerData PD in SS.Players) {
 								PD.CM = iSAPPRemoteUI.CM;
 								iSAPPRemoteUI.playerslist[Player.GetListIndex(iSAPPRemoteUI.playerslist, PD.Index)] = PD;
@@ -249,7 +247,7 @@ namespace SAPPRemote
 						}
 					}
 					return;
-				case Server.RemoteConsoleOpcode.RC_CIN:
+                case Server.RemoteConsoleOpcode.RC_CIN:
 					{
 
 					}
@@ -288,7 +286,6 @@ namespace SAPPRemote
 					}
 				case Server.RemoteConsoleOpcode.RC_PJOIN:
 					{
-						
 						try {
 							iSAPPRemoteUI.updater.Stop();
 							PlayerData tempplayer = Player.GetData(temp);
@@ -302,7 +299,6 @@ namespace SAPPRemote
 						} catch (Exception ex) {
 							 
 						}
-						
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_PLEAVE:
@@ -319,14 +315,11 @@ namespace SAPPRemote
 						} catch (Exception ex) {
 							 
 						}
-						
 					}
 					return;
 				case Server.RemoteConsoleOpcode.RC_TEAMCHANGE:
 					{
 						try {
-							
-							
 							iSAPPRemoteUI.updater.Stop();
 							TeamChange TC = Json.GetTeamChange(temp);
 							int pindex = Player.GetListIndex(iSAPPRemoteUI.playerslist.ToList(), TC.Index);
@@ -334,9 +327,6 @@ namespace SAPPRemote
 							PD = iSAPPRemoteUI.playerslist[pindex];
 							 
 							iSAPPRemoteUI.playerslist.RemoveAt(pindex);
-
-							PD.iPlayerColor = Player.GetColor(Player.GetTeamColor(TC.iTeam));
-							 
 
 							iSAPPRemoteUI.textBox_console.CheckAppendText(PD.Name + " changed to " + Player.GetTeamText(TC.iTeam) + " team\n");
 							iSAPPRemoteUI.playerslist.Add(PD);
@@ -364,11 +354,6 @@ namespace SAPPRemote
 							 
 						}
 						
-					}
-					return;
-				default:
-					{
-						iSAPPRemoteUI.textBox_console.CheckAppendText(temp + "\n");
 					}
 					return;
 			}

@@ -301,7 +301,6 @@ namespace SAPPRemote
 
 	public class TeamChange
 	{
-
 		private int defaultIndex = 0;
 
 		private int defaultTeam = 0;
@@ -318,17 +317,7 @@ namespace SAPPRemote
 		public Server.RemoteConsoleOpcode opCode { get; set; }
 
 		[JsonProperty("team")]
-		public int iTeam { get { return this.defaultTeam; } set { this.defaultTeam = value; } }
-
-		[JsonIgnore]
-		public SolidColorBrush Team {
-			get {
-				this.defaultiTeam = Player.GetTeamColor(this.iTeam);
-				return this.defaultiTeam; 
-			}
-			set { this.defaultiTeam = value; }
-		}
-		
+		public int iTeam { get { return this.defaultTeam; } set { this.defaultTeam = value; } }	
 
 	}
 

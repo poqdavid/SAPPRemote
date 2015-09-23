@@ -39,17 +39,6 @@ namespace SAPPRemote
 			 
 			return ic;
 		}
-		internal static SolidColorBrush GetTeamColor(int color_code)
-		{
-			switch (color_code) {
-				case 0:
-					return Brushes.Red;
-				case 1:
-					return Brushes.Blue;
-				default:
-					return Brushes.Black;
-			}
-		}
 		
 		internal static string GetTeamText(int code)
 		{
@@ -189,15 +178,6 @@ namespace SAPPRemote
 
 		[JsonIgnore]
 		public ContextMenu CM { get { return defaultCM; } set { defaultCM = value; } }
-
-		[JsonIgnore]
-		public SolidColorBrush Team {
-			get {
-				this.defaultiTeam = Player.GetTeamColor(this.iTeam);
-				return this.defaultiTeam; 
-			}
-			set { this.defaultiTeam = value; }
-		}
 
 		[JsonIgnore]
 		public string Stats { get { return string.Format("Score: {0}\nKills: {1}\nAssists: {2}\nDeaths: {3}\nSuicides: {4}\nBetrays: {5}", this.Score, this.Kills, this.Assists, this.Deaths, this.Suicides, this.Betrays); } set { } }
