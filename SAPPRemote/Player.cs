@@ -90,11 +90,11 @@ namespace SAPPRemote
 			temp.Kills = Json.get_int(json, "kills");
 			temp.Assists = Json.get_int(json, "assists");
 			temp.Deaths = Json.get_int(json, "deaths");
-			;
 			temp.Suicides = Json.get_int(json, "suicides");
 			temp.Betrays = Json.get_int(json, "betrays");
 			return temp;
 		}
+
 		internal static string GetStat_str(string json)
 		{
 			string tempstat = "";
@@ -184,7 +184,21 @@ namespace SAPPRemote
        
 	}
 
-	
+	public class PlayersStat
+	{
+		///<summary>
+		/// Default value for .
+		///</summary>
+		private Players<PlayerData> defaultPlayers = new Players<PlayerData>() { };
+
+		///<summary>
+		/// Gets or sets a value indicating whether to use   or not.
+		///</summary>
+		///<value>Use .</value>
+		[JsonProperty("players")]
+		public Players<PlayerData> Players { get { return this.defaultPlayers; } set { this.defaultPlayers = value; } }
+	}
+		
 	public class PlayerStat
 	{
 		public int Score { get; set; }
