@@ -6,11 +6,15 @@
   "MenuItems": [
     {
       "text": "Kick",
-      "command": "sv_kick %index"
+      "command": "k %index"
     },
     {
       "text": "Ban",
-      "command": "sv_ban %index"
+      "command": "b %index"
+    },
+    {
+      "text": "IP-Ban",
+      "command": "ipban %index"
     }
   ]
 }

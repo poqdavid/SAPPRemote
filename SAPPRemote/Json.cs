@@ -133,6 +133,25 @@ namespace SAPPRemote
 			}
 			return temp;
 		}
+		
+		public static PlayersStat GetPlayersStat(string json_string)
+		{
+			PlayersStat temp = new PlayersStat();
+			try {
+				//string json_string = File.ReadAllText(SAPPRemote.MainWindow.SettingPath);
+				if (Json.IsValid(json_string)) {
+					var s = new JsonSerializerSettings();
+					s.NullValueHandling = NullValueHandling.Ignore;
+					s.ObjectCreationHandling = ObjectCreationHandling.Replace; // without this, you end up with duplicates.
+
+					temp = JsonConvert.DeserializeObject<PlayersStat>(json_string, s);
+				} else {
+
+				}
+			} catch (Exception) {
+			}
+			return temp;
+		}
 
 		public static ServerStat GetServerStat(string json_string)
 		{
