@@ -50,7 +50,6 @@ namespace SAPPRemote
 		{
 			iSAPPRemoteUI.Show();
 		}
-		
 
 		public static void Connect(string ip_port, string username, string password)
 		{
@@ -106,8 +105,6 @@ namespace SAPPRemote
 			connectDone.Set();
 		}
 		
-
-		
 		public static void Send(TcpClient client, String data)
 		{
 			try {
@@ -132,7 +129,6 @@ namespace SAPPRemote
 			}
 		}
 
-
 		public static void SendQUERY()
 		{
 			Send(clientSocket, Json.GenerateString(new { opcode = Server.RemoteConsoleOpcode.RC_QUERY }));
@@ -141,7 +137,6 @@ namespace SAPPRemote
 		public static void SendQUERY_STATS()
 		{
 			Send(clientSocket, Json.GenerateString(new { opcode = Server.RemoteConsoleOpcode.RC_QUERY_STATS }));
- 
 		}
 		
 		static bool loadplayerslist = false;
@@ -303,7 +298,6 @@ namespace SAPPRemote
 					return;
 				case Server.RemoteConsoleOpcode.RC_PLEAVE:
 					{
-						
 						try {
 							iSAPPRemoteUI.updater.Stop();
 							int pindex = Player.GetListIndex(iSAPPRemoteUI.playerslist.ToList(), Json.get_int(temp, "index"));
@@ -328,7 +322,7 @@ namespace SAPPRemote
 							 
 							iSAPPRemoteUI.playerslist.RemoveAt(pindex);
 
-							iSAPPRemoteUI.textBox_console.CheckAppendText("Teamchange, " + PD.Name + " changed to " + Player.GetTeamText(TC.iTeam) + " team\n");
+							iSAPPRemoteUI.textBox_console.CheckAppendText("Teamchange, " + PD.Name + " changed to the " + Player.GetTeamText(TC.iTeam) + " team\n");
 							iSAPPRemoteUI.playerslist.Add(PD);
 							
 							iSAPPRemoteUI.updater.Start();

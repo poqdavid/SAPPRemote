@@ -294,9 +294,9 @@ namespace SAPPRemote
 		
 		public override string ToString()
 		{
-			return string.Format("Game: {8}\nSAPP Version {0}\nServer Name: {1}\nMap: {2} | Gametype: {3}({4})\nNoLead: {6} | Anticheat: {7}", this.SappVersion, this.ServerName, this.Map, this.Mode, this.GameType, this.Players.Count, (this.NoLead ? "ON" : "OFF"), (this.AntiCheat ? "ON" : "OFF"), (this.Running ? "Running" : "Not Running"));
+			return string.Format("Game: {8}\nSAPP Version {0}\nServer Name: {1}\nMap: {2} | Gametype: {3} ({4})\nNoLead: {6} | Anticheat: {7}", this.SappVersion, this.ServerName, this.Map, this.Mode, this.GameType, this.Players.Count, (this.NoLead ? "ON" : "OFF"), (this.AntiCheat ? "ON" : "OFF"), (this.Running ? "Running" : "Not Running"));
 		}
-    
+
 	}
 
 	public class TeamChange
