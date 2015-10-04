@@ -2,6 +2,14 @@
 Remote control client for SAPP
 
 ----------
+<p align="center">
+<a href="http://i.imgur.com/ZeiNchI.png" target="_blank">
+<img title="Click to enlarge" src="http://i.imgur.com/ZeiNchIm.png">
+</a>
+</br>
+<a href="http://imgur.com/a/Errsf" target="_blank">More screenshots</a>
+</p>
+
 
 **Features**
 * Fully functional remote console for SAPP 9.4.1
