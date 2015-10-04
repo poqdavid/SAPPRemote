@@ -19,7 +19,7 @@ Remote control client for SAPP
 **Instructions**  
 * If you want to run the client with different settings (e.g., ``SAPPRemote.exe path Setting2.json``)  
 
-* If you want to add you menus to players list (this is how client generates menus)
+* If you want to add you menus to players list (this is how client generates menus)  
 Note: this is the default set of menus and once you run the client you can also see them in the settings file
 ```
 "MenuItems": [
