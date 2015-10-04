@@ -3,11 +3,16 @@ Remote control client for SAPP
 
 ----------
 
-**Instructions**
+**Features**
+* Fully functional remote console for SAPP 9.4.1
+* Players list with (player/team) color (players stat is shown once you hover the mouse on the player)
+* Custom context menu for players list
 
-You can simply run SAPPRemote like ``SAPPRemote.exe path <full path to setting file>`` so you can use same exe with different settings  
+**Instructions**  
+* If you want to run the client with different settings (e.g., ``SAPPRemote.exe path Setting2.json``)  
 
-Here is some sample data for adding menus to players list (note that this will be created by default when you run the program for the first time)  
+* If you want to add you menus to players list (this is how client generates menus)
+Note: this is the default set of menus and once you run the client you can also see them in the settings file
 ```
 "MenuItems": [
   {
