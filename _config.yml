@@ -1,1 +1,8 @@
 theme: jekyll-theme-hacker
+show_downloads: false
+github:
+  zip_url: https://github.com/poqdavid/SAPPRemote/zipball/master
+  tar_url: https://github.com/poqdavid/SAPPRemote/tarball/master
+  msi_en-us: https://github.com/poqdavid/SAPPRemote/releases/download/v2.0/SAPPRemoteSetup_en-us.msi
+  msi_es-es: https://github.com/poqdavid/SAPPRemote/releases/download/v2.0/SAPPRemoteSetup_es-es.msi
+  portable: https://github.com/poqdavid/SAPPRemote/releases/download/v2.0/SAPPRemote_portable.zip
