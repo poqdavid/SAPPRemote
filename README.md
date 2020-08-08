@@ -18,7 +18,7 @@ Remote control client for SAPP
 
 **Instructions**  
 * If you want to run the client with different settings you can use (e.g., ``SAPPRemote.exe Setting.sapp``)
-* Or if you used the setup you can simpply double click on the file
+* Or if you used the setup you can simpply double click on the file (<a href="https://github.com/poqdavid/SAPPRemote/raw/master/Default.sapp">Default.sapp</a>)
 
 * If you want to add you menus to players list (this is how client generates menus)  
 Note: this is the default set of menus and once you run the client you can also see them in the settings file
