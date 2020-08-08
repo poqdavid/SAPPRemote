@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?ifndef Version?>
+<?define Version = "2.0" ?>
+<?endif ?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Id="*" Name="SAPPRemote" Language="1033" Version="$(var.Version)"
+           Manufacturer="POQDavid" UpgradeCode="1BB97E9E-4756-459D-98DC-B294477CD88E">
+
+    <Package InstallerVersion="200"
+         Platform="x64"
+         Compressed="yes"
+         InstallScope="perMachine"
+         InstallPrivileges="elevated" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
+
+    <WixVariable Id="WixUIDialogBmp" Value="WixUIDialogBmp.jpg" />
+    <WixVariable Id="WixUIBannerBmp" Value="WixUIBannerBmp.bmp" />
+    <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <Icon Id="SAPPRemote.ico" SourceFile="..\SAPPRemote\SAPPRemote.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="SAPPRemote.ico" />
+
+    <UI>
+      <UIRef Id="WixUI_InstallDir" />
+    </UI>
+
+    <Feature Id="ProductFeature" Title="SAPPRemote" Level="1">
+      <ComponentGroupRef Id="SAPPRemote_Project" />
+      <ComponentGroupRef Id="SAPPRemote_Exe" />
+      <ComponentRef Id="RegistryEntries" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="SAPPRemote" />
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="SAPPRemote"/>
+      </Directory>
+      
+      <Component Id="RegistryEntries" Guid="44741511-46A9-4214-ADCD-40DD3498C9A8">
+
+        <RegistryKey Root="HKLM" Key="SOFTWARE\Classes\.sapp" ForceCreateOnInstall='yes' ForceDeleteOnUninstall='yes'>
+          <RegistryValue Type="string" Value="SAPPRemote_ext"/>
+        </RegistryKey>
+
+        <RegistryKey Root="HKLM" Key="SOFTWARE\Classes\SAPPRemote_ext" ForceCreateOnInstall='yes' ForceDeleteOnUninstall='yes' >
+          <RegistryKey Key="shell" ForceCreateOnInstall='yes' ForceDeleteOnUninstall='yes'>
+            <RegistryKey Key="open" ForceCreateOnInstall='yes' ForceDeleteOnUninstall='yes'>
+              <RegistryKey Key="command" ForceCreateOnInstall='yes' ForceDeleteOnUninstall='yes'>
+                <RegistryValue Type="string" Value="[INSTALLFOLDER]SAPPRemote.exe &quot;%1&quot;"/>
+              </RegistryKey>
+            </RegistryKey>
+          </RegistryKey>
+        </RegistryKey>
+
+      </Component>
+      
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="SAPPRemote_Exe">
+      <Component Id="SAPPRemotePathEntry" Directory="INSTALLFOLDER" Guid="5E7C9E7E-F005-4D33-98A7-A1102DB304C3">
+        <CreateFolder/>
+        <RemoveFile Id="InstallState" On="uninstall" Name="sappremote.InstallState" />
+        <Environment
+          Id="PATH"
+          Name="PATH"
+          Value="[INSTALLFOLDER]"
+          Permanent="yes"
+          Part="last"
+          Action="set"
+          System="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  
+  <Fragment>
+  <DirectoryRef Id="ApplicationProgramsFolder">
+    <Component Id="ApplicationShortcut" Guid="9AB17C2F-91A5-49A2-AE3C-89F107718B1B">
+      <Shortcut Id="ApplicationStartMenuShortcut"
+           Name="SAPPRemote"
+         Description="My Application Description"
+          Target="[INSTALLFOLDER]SAPPRemote.exe"
+                WorkingDirectory="INSTALLFOLDER"/>
+      <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+      <RegistryValue Root="HKCU" Key="Software\POQDavid\SAPPRemote" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+    </Component>
+  </DirectoryRef>
+  </Fragment>
+</Wix>

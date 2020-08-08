@@ -1,236 +1,266 @@
-﻿// <copyright file="MainWindow.xaml.cs" company="POQDavid">
+/*
+ *      This file is part of SAPPRemote distribution (https://github.com/poqdavid/SAPPRemote or http://poqdavid.github.io/SAPPRemote/).
+ *  	Copyright (c) 2016-2020 POQDavid
+ *      Copyright (c) contributors
+ *
+ *      SAPPRemote is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      SAPPRemote is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with SAPPRemote.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// <copyright file="MainWindow.xaml.cs" company="POQDavid">
 // Copyright (c) POQDavid. All rights reserved.
 // </copyright>
 // <author>POQDavid</author>
 // <summary>This is the MainWindow class.</summary>
 namespace SAPPRemote
 {
-	using System;
-	using System.Collections.Generic;
-	using System.IO;
-	using System.Linq;
-	using System.Net;
-	using System.Net.Sockets;
-	using System.Text;
-	using System.Threading;
-	using System.Windows;
-	using System.Windows.Controls;
-	using System.Windows.Controls.Primitives;
-	using System.Windows.Data;
-	using System.Windows.Documents;
-	using System.Windows.Input;
-	using System.Windows.Media;
-	using System.Windows.Media.Imaging;
-	using System.Windows.Navigation;
-	using System.Windows.Shapes;
-	using System.Windows.Threading;
-	using Newtonsoft.Json;
-	using Newtonsoft.Json.Linq;
-	using System.Collections.ObjectModel;
-	using System.Security.Cryptography;
-	
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class SAPPRemoteUI : Window
-	{
-		///<summary>
-		/// This is simply where plugin stores data and loads them from.
-		///</summary>
-		///<returns>directory for the plugin's data and settings.</returns>
-		private static string settingPath = @"Settings.json";
+    using MaterialDesignColors;
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+    using System.Windows.Media;
+    using System.Windows.Threading;
 
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class SAPPRemoteUI : Window
+    {
+        ///<summary>
+        /// --------.
+        ///</summary>
+        ///<returns>------.</returns>
+        private static string colordataPath = Path.Combine(SAPPTcpClient.AppDataPath, "Colors.sappdata");
 
-		///<summary>
-		/// This is a static member of the Settings.
-		///</summary>
-		private static Settings iSettings;
+        private static ColorData iColorData;
 
-		///<summary>
-		/// Gets or sets the dataDir property.
-		///</summary>
-		///<value>Directory for the plugin's data and settings.</value>
-		public static string SettingPath { get { return settingPath; } set { settingPath = value; } }
+        ///<summary>
+        /// Gets or sets the iSettings property.
+        ///</summary>
+        ///<value>Plugin Settings.</value>
+        public static Settings ISettings { get { return SAPPTcpClient.ISettings; } set { SAPPTcpClient.ISettings = value; } }
 
-		///<summary>
-		/// Gets or sets the iSettings property.
-		///</summary>
-		///<value>Plugin Settings.</value>
-		public static Settings ISettings { get { return iSettings; } set { iSettings = value; } }
+        public static string ColorDataPath { get { return colordataPath; } set { colordataPath = value; } }
 
-		public Players<PlayerData> playerslist = new Players<PlayerData>();
+        public static ColorData IColorData { get { return iColorData; } set { iColorData = value; } }
 
-		public DispatcherTimer updater = new DispatcherTimer();
-		public ContextMenu CM = new ContextMenu();
+        public Players<PlayerData> IPlayersList { get { return playerslist; } set { playerslist = value; } }
 
-		private void ReadArgs()
-		{
-			if (Environment.GetCommandLineArgs().Length > 0) {
-				int i = 0;
-				foreach (string arg in Environment.GetCommandLineArgs()) {
-					if (arg == "path") {
-						settingPath = Environment.GetCommandLineArgs()[(i + 1)];
-					}
-					i++;
-				}
+        public Players<PlayerData> playerslist;
 
-			} else {
+        public DispatcherTimer updater = new DispatcherTimer();
 
-			}
-		}
+        private PlayerData SelectedPD = null;
 
-        
-		public SAPPRemoteUI()
-		{
-			ReadArgs();
-			updater.Tick += updater_Tick;
-			updater.Interval = new TimeSpan(0, 0, 5);
-			updater.Stop();
-			iSettings = new Settings();
-			iSettings.LoadSettings();
-			InitializeComponent();
+        public SAPPRemoteUI()
+        {
+            SAPPTcpClient.logger.Info("Initializing resources for SAPPRemoteUI");
+            updater.Tick += Updater_Tick;
+            updater.Interval = new TimeSpan(0, 0, 5);
+            updater.Stop();
 
+            iColorData = new ColorData();
+            iColorData.Load();
 
-			textBox_ip_port.Text = iSettings.IP_Port;
-			textBox_username.Text = iSettings.UserName;
-			textBox_password.Password = iSettings.Password;
-             
-			checkbox_autoconnect.IsChecked = iSettings.AutoConnect;
-            
-			playerslist.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(playerslist_CollectionChanged);
-			foreach (iMenuData imd in iSettings.iMenuItems) {
-				CM.Items.Add(GenerateMenuItem(imd));
-			}
+            playerslist = new Players<PlayerData>();
+            InitializeComponent();
+            SAPPTcpClient.logger.Info("Initialized resources for SAPPRemoteUI");
 
-		}
+            SAPPTcpClient.ISettings.PropertyChanged += ISettings_PropertyChanged;
+            SAPPTcpClient.ISettings.GUI.XTheme.PropertyChanged += ITheme_PropertyChanged;
 
-		public MenuItem GenerateMenuItem(iMenuData imd)
-		{
-			MenuItem MI = new MenuItem();
-			MI.Click += new RoutedEventHandler(MenuItem_Click);
-			MI.Header = imd.Text;
-			MI.Tag = imd.Command;
-			return MI;
-		}
+            this.theme_p.ItemsSource = iColorData.ColorDataList;
+        }
 
-		void window_client_Loaded(object sender, RoutedEventArgs e)
-		{
-			if (iSettings.AutoConnect == true) {
-				myTcpClient.Connect(textBox_ip_port.Text, textBox_username.Text, textBox_password.Password);
-			}
-		}
+        private void ITheme_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            SAPPTcpClient.ISettings.SaveSetting();
+        }
 
-		public static string CreateMD5(string input)
-		{
-			MD5 md5Hash = System.Security.Cryptography.MD5.Create();
+        private void ISettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            SAPPTcpClient.ISettings.SaveSetting();
+        }
 
-			byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+        private void Window_client_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
 
-			StringBuilder sBuilder = new StringBuilder();
+        private void Updater_Tick(object sender, EventArgs e)
+        {
+            SAPPTcpClient.SendQUERY_STATS();
+        }
 
-			for (int i = 0; i < data.Length; i++) {
-				sBuilder.Append(data[i].ToString("x2"));
-			}
+        private void TextBox_command_KeyUp(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                string outText = "";
+                if (e.Key == Key.Enter)
+                {
+                    outText = Json.GenerateString(new Command(textBox_command.Text));
+                    SAPPTcpClient.Send(SAPPTcpClient.clientSocket, outText);
+                    textBox_command.Text = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                SAPPTcpClient.Disconnect();
+                if (e.Key == Key.Enter)
+                {
+                    textBox_command.Text = "";
+                }
+                SAPPTcpClient.logger.Error(ex, ex.Message);
+            }
+        }
 
-			return sBuilder.ToString();
-		}
-		
-		private void updater_Tick(object sender, EventArgs e)
-		{
-			myTcpClient.SendQUERY_STATS();
-		}
+        private void Button_connect_Click(object sender, RoutedEventArgs e)
+        {
+            SAPPTcpClient.Connect(textBox_ip_port.Text);
+        }
 
-		void playerslist_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-		{
-			listBox_players.ItemsSource = playerslist;
-		}
+        private void Button_disconnect_Click(object sender, RoutedEventArgs e)
+        {
+            SAPPTcpClient.Disconnect();
+        }
 
-		void textBox_command_KeyUp(object sender, KeyEventArgs e)
-		{
-			try {
-				string outText = "";
-				if (e.Key == Key.Enter) {
-					
-					outText = Json.GenerateString(new Command(textBox_command.Text));
-					myTcpClient.Send(myTcpClient.clientSocket, outText);
-					textBox_command.Text = "";
-				} 
+        private void RichtextBox_console_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            richtextBox_console.ScrollToEnd();
+        }
 
-			} catch (Exception) {
-				myTcpClient.Disconnect();
-				if (e.Key == Key.Enter) {
-					textBox_command.Text = "";
-				}
-			}
-		}
-		
-		void button_connect_Click(object sender, RoutedEventArgs e)
-		{
-			myTcpClient.Connect(textBox_ip_port.Text, textBox_username.Text, textBox_password.Password);
-		}
+        private void Window_client_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try
+            {
+                SAPPTcpClient.Disconnect();
+            }
+            catch (Exception ex)
+            {
+                SAPPTcpClient.logger.Error(ex, ex.Message);
+            }
+        }
 
-		void button_disconnect_Click(object sender, RoutedEventArgs e)
-		{
-			myTcpClient.Disconnect();
-		}
+        public void SetServerStatText(string text)
+        {
+            textblock_serverstat.SetText(text);
+        }
 
-		void textBox_console_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			textBox_console.ScrollToEnd();
-		}
+        private void TextBox_password_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            SAPPTcpClient.ISettings.Password = textBox_password.Password;
+            SAPPTcpClient.ISettings.SaveSetting();
+        }
 
-		private void window_client_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			try {
-				myTcpClient.Disconnect();
-			} catch (Exception) {
-			}
-		}
-		
-		public void SetServerStatText(string text)
-		{
-			textblock_serverstat.SetText(text);
-		}
-				
-		private void textBox_ip_port_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			iSettings.IP_Port = textBox_ip_port.Text;
-			iSettings.SaveSetting();
-		}
+        private void Button_refresh_Click(object sender, RoutedEventArgs e)
+        {
+            SAPPTcpClient.SendQUERY();
+        }
 
-		private void textBox_username_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			iSettings.UserName = textBox_username.Text;
-			iSettings.SaveSetting();
-		}
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = e.Source as MenuItem;
+            MenuItemClick(mi);
+        }
 
-		private void textBox_password_PasswordChanged(object sender, RoutedEventArgs e)
-		{
-			iSettings.Password = textBox_password.Password;
-			iSettings.SaveSetting();
-		}
+        private void MenuItemClick(MenuItem mi)
+        {
+            try
+            {
+                string cmd = mi.Tag.ToString().Replace("%index", SelectedPD.Index.ToString()).Replace("%name", SelectedPD.Name);
+                string outText = Json.GenerateString(new Command(cmd));
 
-		private void checkbox_autoconnect_Click(object sender, RoutedEventArgs e)
-		{
-			iSettings.AutoConnect = checkbox_autoconnect.IsChecked;
-			iSettings.SaveSetting();
-		}
+                SAPPTcpClient.Send(SAPPTcpClient.clientSocket, outText);
+            }
+            catch (Exception ex) { SAPPTcpClient.logger.Error(ex, ex.Message); }
+        }
 
+        private void Theme_p_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.grid_loading.Visibility == Visibility.Hidden)
+            {
+                if (theme_p.SelectedItem is ColorDataList)
+                {
+                    if (((ColorDataList)this.theme_p.SelectedItem).ColorMetadata == "REC")
+                    {
+                        SetTheme(((ColorDataList)this.theme_p.SelectedItem).ColorName);
+                    }
+                    else if (((ColorDataList)this.theme_p.SelectedItem).ColorMetadata != "SEP")
+                    {
+                        string cdata = ((ColorDataList)this.theme_p.SelectedItem).ColorMetadata;
+                        Color cx = (Color)System.Windows.Media.ColorConverter.ConvertFromString(cdata);
+                        SetTheme(cx);
+                    }
+                }
+            }
+        }
 
-		private void button_refresh_Click(object sender, RoutedEventArgs e)
-		{
-			myTcpClient.SendQUERY();
-		}
+        public void SetTheme(string cname)
+        {
+            var paletteHelper = new MaterialDesignThemes.Wpf.PaletteHelper();
+            SwatchesProvider swatchesProvider = new SwatchesProvider();
+            Swatch color = swatchesProvider.Swatches.FirstOrDefault(a => a.Name == cname);
+            paletteHelper.ReplacePrimaryColor(color);
+        }
 
-		private void MenuItem_Click(object sender, RoutedEventArgs e)
-		{
-			MenuItem temp = (MenuItem)sender;
-			PlayerData PD = (PlayerData)listBox_players.SelectedItem;
-			string outText = "";
-			outText = Json.GenerateString(new Command(temp.Tag.ToString().Replace("%index", PD.Index.ToString()).Replace("%name", PD.Name)));
-			myTcpClient.Send(myTcpClient.clientSocket, outText);
-           
-		}
+        public void SetTheme(Color c)
+        {
+            var paletteHelper = new MaterialDesignThemes.Wpf.PaletteHelper();
 
-	}
+            paletteHelper.ChangePrimaryColor(c);
+        }
+
+        private void Window_client_ContentRendered(object sender, EventArgs e)
+        {
+            SAPPTcpClient.logger.Info("Finished rendering content for SAPPRemoteUI");
+
+            if (theme_p.SelectedItem is ColorDataList)
+            {
+                if (((ColorDataList)this.theme_p.SelectedItem).ColorMetadata == "REC")
+                {
+                    SetTheme(((ColorDataList)this.theme_p.SelectedItem).ColorName);
+                }
+                else if (((ColorDataList)this.theme_p.SelectedItem).ColorMetadata != "SEP")
+                {
+                    string cdata = ((ColorDataList)this.theme_p.SelectedItem).ColorMetadata;
+                    Color cx = (Color)System.Windows.Media.ColorConverter.ConvertFromString(cdata);
+                    SetTheme(cx);
+                }
+            }
+            this.grid_loading.Visibility = Visibility.Hidden;
+
+            if (SAPPTcpClient.ISettings.AutoConnect == true)
+            {
+                SAPPTcpClient.Connect(textBox_ip_port.Text);
+            }
+
+            textBox_password.Password = SAPPTcpClient.ISettings.Password;
+        }
+
+        private void Button_setting_Click(object sender, RoutedEventArgs e)
+        {
+            DH_Settings.IsOpen = true;
+        }
+
+        private void ListBox_players_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listBox_players.SelectedItem != null)
+            {
+                this.SelectedPD = (PlayerData)listBox_players.SelectedItem;
+            }
+        }
+    }
 }
