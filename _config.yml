@@ -1,5 +1,6 @@
 theme: jekyll-theme-hacker
 show_downloads: false
+google_analytics: UA-68133470-1
 github:
   zip_url: https://github.com/poqdavid/SAPPRemote/zipball/master
   tar_url: https://github.com/poqdavid/SAPPRemote/tarball/master
