@@ -3,8 +3,8 @@ Remote control client for SAPP
 
 ----------
 <p align="center">
-<a href="http://i.imgur.com/ZeiNchI.png" target="_blank">
-<img title="Click to enlarge" src="http://i.imgur.com/ZeiNchIm.png">
+<a href="https://i.imgur.com/6XyKRIR.png" target="_blank">
+<img title="Click to enlarge" src="https://i.imgur.com/6XyKRIR.png">
 </a>
 <br>
 <a href="http://imgur.com/a/Errsf" target="_blank">More screenshots</a>
@@ -17,7 +17,8 @@ Remote control client for SAPP
 * Custom context menu for players list (%index, %name)
 
 **Instructions**  
-* If you want to run the client with different settings (e.g., ``SAPPRemote.exe path Setting2.json``)  
+* If you want to run the client with different settings you can use (e.g., ``SAPPRemote.exe Setting.sapp``)
+* Or if you used the setup you can simpply double click on the file
 
 * If you want to add you menus to players list (this is how client generates menus)  
 Note: this is the default set of menus and once you run the client you can also see them in the settings file
