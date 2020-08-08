@@ -1,37 +1,37 @@
-## Welcome to GitHub Pages
+<p align="center">
+<a href="https://i.imgur.com/6XyKRIR.png" target="_blank">
+<img title="Click to enlarge" src="https://i.imgur.com/6XyKRIR.png">
+</a>
+<br>
+<a href="http://imgur.com/a/Errsf" target="_blank">More screenshots</a>
+</p>
 
-You can use the [editor on GitHub](https://github.com/poqdavid/SAPPRemote/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+You can download the lastest release from [SAPPRemote v2.0](https://github.com/poqdavid/SAPPRemote/releases/download/v2.0)  
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+**Features**
+* Fully functional remote console for SAPP 9.4.1
+* Players list with (player/team) color (players stat is shown once you hover the mouse on the player)
+* Custom context menu for players list (%index, %name)
 
-### Markdown
+**Instructions**  
+* If you want to run the client with different settings you can use (e.g., ``SAPPRemote.exe Setting.sapp``)
+* Or if you used the setup you can simpply double click on the file (<a href="https://github.com/poqdavid/SAPPRemote/raw/master/Default.sapp">Default.sapp</a>)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+* If you want to add you menus to players list (this is how client generates menus)  
+Note: this is the default set of menus and once you run the client you can also see them in the settings file
 ```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/poqdavid/SAPPRemote/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+"MenuItems": [
+  {
+    "text": "Kick",
+    "command": "k %index"
+  },
+  {
+    "text": "Ban",
+    "command": "b %index"
+  },
+  {
+    "text": "IP-Ban",
+    "command": "ipban %index"
+  }
+]
+```
