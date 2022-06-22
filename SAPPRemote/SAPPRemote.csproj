@@ -45,7 +45,7 @@
     <PackageReference Include="MaterialDesignThemes" Version="3.2.0-ci1798" />
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.5-ci1798" />
     <PackageReference Include="MaterialDesignThemes.Wpf" Version="1.0.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="4.7.3" />
     <PackageReference Include="NLog.Config" Version="4.7.3" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.4" />
